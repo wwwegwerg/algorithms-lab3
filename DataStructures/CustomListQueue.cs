@@ -10,13 +10,13 @@ public class CustomListQueue<T> : IDataStructure<T>
         _list.Insert(0, item);
     }
 
-    public T? Remove()
+    public (bool success, T? value) Remove()
     {
         if (_list.Count == 0)
-            throw new InvalidOperationException("Queue is empty");
+            return (false, default);
         var result = _list[^1];
         _list.RemoveAt(_list.Count - 1);
-        return result;
+        return (true, result);
     }
 
     public (bool success, T? value) Peek()

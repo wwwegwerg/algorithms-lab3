@@ -1,29 +1,27 @@
 using System.Diagnostics;
 
-namespace lab3;
+namespace lab3.Tasks;
 
 public static class Benchmark
 {
-    public static void Warmup(Task task, int warmupCount)
+    public static void Warmup(Action action, int warmupCount)
     {
         for (var i = 0; i < warmupCount; i++)
         {
-            task.Start();
+            action();
         }
     }
 
-    public static double MeasureDurationInMs(Task task, int repetitionCount)
+    public static double MeasureDurationInMs(Action action, int repetitionCount)
     {
         GC.Collect();
         GC.WaitForPendingFinalizers();
         GC.Collect();
 
-        var stopwatch = new Stopwatch();
+        var stopwatch = Stopwatch.StartNew();
         for (var i = 0; i < repetitionCount; i++)
         {
-            stopwatch.Start();
-            task.Start();
-            stopwatch.Stop();
+            action();
         }
 
         stopwatch.Stop();

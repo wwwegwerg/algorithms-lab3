@@ -1,9 +1,22 @@
-namespace lab3;
+using DataStructures;
+using lab3.Charts;
 
-public class Tasks
+namespace lab3.Tasks;
+
+public class Taskss
 {
     public static void Stack()
     {
+        var cd = Helpers.Build1DTime(
+            "stack",
+            "Количество операций",
+            "Время (мс)",
+            5,
+            5,
+            arr => () => Helpers.ParseData(arr, new CustomStack<string>())
+        );
+        
+        ChartBuilder.Build2DLineChart(cd);
     }
 
     public static void PostfixEvaluation()

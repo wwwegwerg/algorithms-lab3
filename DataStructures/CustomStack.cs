@@ -10,13 +10,13 @@ public class CustomStack<T> : IDataStructure<T>
         _list.AddLast(item);
     }
 
-    public T? Remove()
+    public (bool success, T? value) Remove()
     {
         if (_list.Last == null)
-            throw new InvalidOperationException("Stack is empty");
+            return (false, default);
         var result = _list.Last.Value;
         _list.RemoveLast();
-        return result;
+        return (true, result);
     }
 
     public (bool success, T? value) Peek()

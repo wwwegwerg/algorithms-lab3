@@ -13,16 +13,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="input_same.txt">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="input_var.txt">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+      <ProjectReference Include="..\DataStructures\DataStructures.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DataStructures\DataStructures.csproj" />
+      <None Update="input.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="filler.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
