@@ -56,7 +56,11 @@ public static class ChartBuilder
             .WithXAxisStyle(Title.init(cd.XAxisTitle))
             .WithYAxisStyle(Title.init(cd.YAxisTitle))
             .WithConfig(Config.init(Responsive: true));
-        var html = GenericChart.toEmbeddedHTML(chart);
+
+        var html = GenericChart.toEmbeddedHTML(chart).Replace(
+            "<title>Plotly.NET Datavisualization</title>",
+            $"<title>{Sanitize(cd.Title)}</title>"
+        );
         html = EnsureResponsiveUtf8Head(html);
         File.WriteAllText(filePath, html, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
 

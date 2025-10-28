@@ -96,57 +96,124 @@ public static class Helpers
     }
 
     public static ChartData BenchStack(
-        string title,
-        string xLabel,
-        string yLabel,
         int warmupCount,
-        int repetitionsCount,
-        Func<string[], Action> taskFactory)
+        int repetitionCount)
     {
         var dataSize = Inputs.Count / 3;
 
-        var pushHeavyTimes = new List<DataPoint>(dataSize);
-        var popHeavyTimes = new List<DataPoint>(dataSize);
-        var equallyHeavyTimes = new List<DataPoint>(dataSize);
+        var results = new List<(string SeriesTitile, IList<DataPoint> Mesuarements)>
+        {
+            ("Push Heavy", new List<DataPoint>(dataSize)),
+            ("Pop Heavy", new List<DataPoint>(dataSize)),
+            ("Equally Heavy", new List<DataPoint>(dataSize))
+        };
 
         // Console.WriteLine($"Started at {DateTime.Now.TimeOfDay}");
+
+        Benchmark.Warmup(() => ParseData(Inputs[0], GetCustomStack()), warmupCount);
+
         var sw = Stopwatch.StartNew();
 
-        Benchmark.Warmup(taskFactory(Inputs[0]), warmupCount);
-
-        for (var i = 0; i < Inputs.Count; i += 3)
+        for (var i = 0; i < Inputs.Count; i++)
         {
-            var pushHeavyInput = Inputs[i];
-            var popHeavyInput = Inputs[i + 1];
-            var equallyHeavyInput = Inputs[i + 2];
-
-            var pushHeavyTask = taskFactory(pushHeavyInput);
-            var popHeavyTask = taskFactory(popHeavyInput);
-            var equallyHeavyTask = taskFactory(equallyHeavyInput);
-
-            var pushHeavyTime = Benchmark.MeasureDurationInMs(pushHeavyTask, repetitionsCount);
-            var popHeavyTime = Benchmark.MeasureDurationInMs(popHeavyTask, repetitionsCount);
-            var equallyHeavyTime = Benchmark.MeasureDurationInMs(equallyHeavyTask, repetitionsCount);
-
-            pushHeavyTimes.Add(new DataPoint(pushHeavyInput.Length, pushHeavyTime));
-            popHeavyTimes.Add(new DataPoint(popHeavyInput.Length, popHeavyTime));
-            equallyHeavyTimes.Add(new DataPoint(equallyHeavyInput.Length, equallyHeavyTime));
+            var input = Inputs[i];
+            var task = () => ParseData(input, GetCustomStack());
+            var time = Benchmark.MeasureDurationInMs(task, repetitionCount);
+            results[i % 3].Mesuarements.Add(new DataPoint(input.Length, time));
         }
 
         sw.Stop();
         // Console.WriteLine($"Completed at {DateTime.Now.TimeOfDay}");
         // Console.WriteLine($"Total time: {sw.Elapsed.TotalSeconds}s");
-        var results = new List<(string, IList<DataPoint>)>
+
+        return new ChartData(
+            "stack",
+            results,
+            "Количество операций",
+            "Время (мс)",
+            sw.Elapsed.TotalSeconds);
+    }
+
+    private static CustomStack<string> GetCustomStack()
+    {
+        var stack = new CustomStack<string>();
+        var stackSize = Inputs[^1].Length;
+        for (var i = 0; i < stackSize; i++)
         {
-            ("Push Heavy", pushHeavyTimes),
-            ("Pop Heavy", popHeavyTimes),
-            ("Equally Heavy", equallyHeavyTimes)
+            stack.Add(Filler[i]);
+        }
+
+        return stack;
+    }
+
+    public static ChartData BenchQueue(
+        int warmupCount,
+        int repetitionCount)
+    {
+        var dataSize = Inputs.Count / 3;
+
+        var results = new List<(string SeriesTitile, IList<DataPoint> Mesuarements)>
+        {
+            ("Push Heavy Custom Queue", new List<DataPoint>(dataSize)),
+            ("Pop Heavy Custom Queue", new List<DataPoint>(dataSize)),
+            ("Equally Heavy Custom Queue", new List<DataPoint>(dataSize)),
+            ("Push Heavy C# Default Queue", new List<DataPoint>(dataSize)),
+            ("Pop Heavy C# Default Queue", new List<DataPoint>(dataSize)),
+            ("Equally Heavy C# Default Queue", new List<DataPoint>(dataSize))
         };
 
-        return new ChartData(title,
+        // Console.WriteLine($"Started at {DateTime.Now.TimeOfDay}");
+
+        Benchmark.Warmup(() => ParseData(Inputs[0], GetCustomStack()), warmupCount);
+
+        var sw = Stopwatch.StartNew();
+
+        for (var i = 0; i < Inputs.Count; i++)
+        {
+            var input = Inputs[i];
+
+            var customQueueTask = () => ParseData(input, GetCustomQueue());
+            var customQueueTime = Benchmark.MeasureDurationInMs(customQueueTask, repetitionCount);
+            results[i % 3].Mesuarements.Add(new DataPoint(input.Length, customQueueTime));
+
+            var customListQueueTask = () => ParseData(input, GetCustomListQueue());
+            var customListQueueTime = Benchmark.MeasureDurationInMs(customListQueueTask, repetitionCount);
+            results[(i % 3) + 3].Mesuarements.Add(new DataPoint(input.Length, customListQueueTime));
+        }
+
+        sw.Stop();
+        // Console.WriteLine($"Completed at {DateTime.Now.TimeOfDay}");
+        // Console.WriteLine($"Total time: {sw.Elapsed.TotalSeconds}s");
+
+        return new ChartData(
+            "queue",
             results,
-            xLabel,
-            yLabel,
+            "Количество операций",
+            "Время (мс)",
             sw.Elapsed.TotalSeconds);
+    }
+
+    private static CustomQueue<string> GetCustomQueue()
+    {
+        var queue = new CustomQueue<string>();
+        var stackSize = Inputs[^1].Length;
+        for (var i = 0; i < stackSize; i++)
+        {
+            queue.Add(Filler[i]);
+        }
+
+        return queue;
+    }
+
+    private static CustomListQueue<string> GetCustomListQueue()
+    {
+        var queue = new CustomListQueue<string>();
+        var stackSize = Inputs[^1].Length;
+        for (var i = 0; i < stackSize; i++)
+        {
+            queue.Add(Filler[i]);
+        }
+
+        return queue;
     }
 }
