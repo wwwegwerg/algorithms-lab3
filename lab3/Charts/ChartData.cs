@@ -3,26 +3,20 @@ namespace lab3.Charts;
 public class ChartData
 {
     public readonly string Title;
-    public readonly IList<DataPoint> PushHeavyResults;
-    public readonly IList<DataPoint> PopHeavyResults;
-    public readonly IList<DataPoint> EquallyHeavyResults;
+    public readonly IList<(string SeriesTitile, IList<DataPoint> Mesuarements)> Results;
     public readonly string XAxisTitle;
     public readonly string YAxisTitle;
     public readonly double? TotalExecTimeSeconds;
 
     public ChartData(
         string title,
-        IList<DataPoint> pushHeavyResults,
-        IList<DataPoint> popHeavyResults,
-        IList<DataPoint> equallyHeavyResults,
+        IList<(string, IList<DataPoint>)> results,
         string xAxisTitle,
         string yAxisTitle,
         double? totalExecTimeSeconds = null)
     {
         Title = title;
-        PushHeavyResults = pushHeavyResults;
-        PopHeavyResults = popHeavyResults;
-        EquallyHeavyResults = equallyHeavyResults;
+        Results = results;
         XAxisTitle = xAxisTitle;
         YAxisTitle = yAxisTitle;
         TotalExecTimeSeconds = totalExecTimeSeconds;

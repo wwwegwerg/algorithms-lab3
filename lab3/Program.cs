@@ -44,7 +44,7 @@ public class Program
         var queueMenu = new Menu("Часть 2. Очередь");
         queueMenu.Add(1, "Графики", () =>
         {
-            Console.WriteLine();
+            Taskss.Queue();
             Menu.Pause();
         });
 

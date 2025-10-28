@@ -37,34 +37,21 @@ public static class ChartBuilder
             }
         }
 
-        var s1 = Chart
-            .Line<double, double, string>(
-                cd.PushHeavyResults.Select(p => p.X),
-                cd.PushHeavyResults.Select(p => p.Y),
-                Name: "PushHeavy",
-                ShowLegend: true,
-                // LineColor: Color.fromHex("#3E9BCB"),
-                LineWidth: 2.5);
+        var gCharts = new GenericChart[cd.Results.Count];
 
-        var s2 = Chart
-            .Line<double, double, string>(
-                cd.PopHeavyResults.Select(p => p.X),
-                cd.PopHeavyResults.Select(p => p.Y),
-                Name: "PopHeavy",
-                ShowLegend: true,
-                // LineColor: Color.fromHex("#3E9BCB"),
-                LineWidth: 2.5);
+        for (var i = 0; i < gCharts.Length; i++)
+        {
+            var result = cd.Results[i];
+            gCharts[i] = Chart
+                .Line<double, double, string>(
+                    result.Mesuarements.Select(p => p.X),
+                    result.Mesuarements.Select(p => p.Y),
+                    Name: result.SeriesTitile,
+                    ShowLegend: true,
+                    LineWidth: 2.5);
+        }
 
-        var s3 = Chart
-            .Line<double, double, string>(
-                cd.EquallyHeavyResults.Select(p => p.X),
-                cd.EquallyHeavyResults.Select(p => p.Y),
-                Name: "EquallyHeavy",
-                ShowLegend: true,
-                // LineColor: Color.fromHex("#3E9BCB"),
-                LineWidth: 2.5);
-
-        var chart = Plotly.NET.Chart.Combine([s1, s2, s3])
+        var chart = Plotly.NET.Chart.Combine(gCharts)
             .WithTitle(cd.Title)
             .WithXAxisStyle(Title.init(cd.XAxisTitle))
             .WithYAxisStyle(Title.init(cd.YAxisTitle))

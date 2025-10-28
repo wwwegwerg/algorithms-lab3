@@ -95,7 +95,7 @@ public static class Helpers
         return result;
     }
 
-    public static ChartData Build1DTime(
+    public static ChartData BenchStack(
         string title,
         string xLabel,
         string yLabel,
@@ -109,7 +109,7 @@ public static class Helpers
         var popHeavyTimes = new List<DataPoint>(dataSize);
         var equallyHeavyTimes = new List<DataPoint>(dataSize);
 
-        Console.WriteLine($"Started at {DateTime.Now.TimeOfDay}");
+        // Console.WriteLine($"Started at {DateTime.Now.TimeOfDay}");
         var sw = Stopwatch.StartNew();
 
         Benchmark.Warmup(taskFactory(Inputs[0]), warmupCount);
@@ -134,12 +134,17 @@ public static class Helpers
         }
 
         sw.Stop();
-        Console.WriteLine($"Completed at {DateTime.Now.TimeOfDay}");
-        Console.WriteLine($"Total time: {sw.Elapsed.TotalSeconds}s");
+        // Console.WriteLine($"Completed at {DateTime.Now.TimeOfDay}");
+        // Console.WriteLine($"Total time: {sw.Elapsed.TotalSeconds}s");
+        var results = new List<(string, IList<DataPoint>)>
+        {
+            ("Push Heavy", pushHeavyTimes),
+            ("Pop Heavy", popHeavyTimes),
+            ("Equally Heavy", equallyHeavyTimes)
+        };
+
         return new ChartData(title,
-            pushHeavyTimes,
-            popHeavyTimes,
-            equallyHeavyTimes,
+            results,
             xLabel,
             yLabel,
             sw.Elapsed.TotalSeconds);

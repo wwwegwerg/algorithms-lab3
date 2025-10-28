@@ -7,7 +7,7 @@ public class Taskss
 {
     public static void Stack()
     {
-        var cd = Helpers.Build1DTime(
+        var cd = Helpers.BenchStack(
             "stack",
             "Количество операций",
             "Время (мс)",
@@ -15,7 +15,7 @@ public class Taskss
             5,
             arr => () => Helpers.ParseData(arr, new CustomStack<string>())
         );
-        
+
         ChartBuilder.Build2DLineChart(cd);
     }
 
@@ -29,6 +29,16 @@ public class Taskss
 
     public static void Queue()
     {
+        var cd = Helpers.BenchStack(
+            "queue",
+            "Количество операций",
+            "Время (мс)",
+            5,
+            5,
+            arr => () => Helpers.ParseData(arr, new CustomQueue<string>())
+        );
+
+        ChartBuilder.Build2DLineChart(cd);
     }
 
     public static void Kadane()
