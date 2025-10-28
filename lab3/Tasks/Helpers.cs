@@ -1,6 +1,4 @@
-using System.Diagnostics;
 using DataStructures;
-using lab3.Charts;
 
 namespace lab3.Tasks;
 
@@ -31,6 +29,8 @@ public static class Helpers
 
     public static void ParseData(string[] data, IDataStructure<string> ds, bool showOutput = false)
     {
+        var originalOutputState = ds.ShowOutput;
+        ds.ShowOutput = false;
         foreach (var line in data)
         {
             switch (line[0])
@@ -69,5 +69,6 @@ public static class Helpers
                 }
             }
         }
+        ds.ShowOutput = originalOutputState;
     }
 }

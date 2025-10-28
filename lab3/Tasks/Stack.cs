@@ -53,7 +53,7 @@ public static class Stack
 
     private static CustomStack<string> GetCustomStack()
     {
-        var stack = new CustomStack<string>();
+        var stack = new CustomStack<string>(false);
         var stackSize = Helpers.Inputs[^1].Length;
         for (var i = 0; i < stackSize; i++)
         {

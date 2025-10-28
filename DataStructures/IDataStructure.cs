@@ -2,6 +2,7 @@ namespace DataStructures;
 
 public interface IDataStructure<T>
 {
+    bool ShowOutput  { get; set; }
     int Count { get; }
     void Add(T? item);
     (bool Success, T? Value) Remove();

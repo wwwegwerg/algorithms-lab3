@@ -7,15 +7,15 @@ public static class PostfixEvaluator
 {
     public static void Run()
     {
-        Console.WriteLine("Введите выражение в постфиксной форме");
-        var expression = Console.ReadLine()?.Trim().ToLower();
-        while (string.IsNullOrEmpty(expression))
+        Console.WriteLine("Введите выражение в постфиксной форме (каждый символ через пробел)");
+        var input = Console.ReadLine()?.Trim().ToLower();
+        while (string.IsNullOrEmpty(input))
         {
             Console.WriteLine("Введите выражение");
-            expression = Console.ReadLine()?.Trim().ToLower();
+            input = Console.ReadLine()?.Trim().ToLower();
         }
 
-        var result = Evaluate(expression);
+        var result = Evaluate(input);
         Console.WriteLine("Результат: " + result);
     }
 
@@ -45,7 +45,7 @@ public static class PostfixEvaluator
 
     private static double Evaluate(string expression)
     {
-        var stack = new CustomStack<double>();
+        var stack = new CustomStack<double>(true);
         var tokens = expression.Split(
             [' ', '\t'],
             StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
@@ -56,7 +56,6 @@ public static class PostfixEvaluator
             if (double.TryParse(token, NumberStyles.Any, CultureInfo.InvariantCulture, out var number))
             {
                 stack.Add(number);
-                stack.Print();
                 continue;
             }
 
@@ -66,10 +65,8 @@ public static class PostfixEvaluator
                     throw new InvalidOperationException($"Недостаточно операндов для унарной операции '{token}'.");
 
                 var a = stack.Remove().Value;
-                stack.Print();
                 var res = unary(a);
                 stack.Add(res);
-                stack.Print();
                 continue;
             }
 
@@ -80,10 +77,8 @@ public static class PostfixEvaluator
 
                 var b = stack.Remove().Value;
                 var a = stack.Remove().Value;
-                stack.Print();
                 var res = binary(a, b);
                 stack.Add(res);
-                stack.Print();
                 continue;
             }
 

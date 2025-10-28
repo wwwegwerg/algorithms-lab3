@@ -7,15 +7,15 @@ public static class InfixToPostfixConverter
 {
     public static void Run()
     {
-        Console.WriteLine("Введите выражение в инфиксной форме");
-        var expression = Console.ReadLine()?.Trim().ToLower();
-        while (string.IsNullOrEmpty(expression))
+        Console.WriteLine("Введите выражение в инфиксной форме (каждый символ через пробел)");
+        var input = Console.ReadLine()?.Trim().ToLower();
+        while (string.IsNullOrEmpty(input))
         {
             Console.WriteLine("Введите выражение");
-            expression = Console.ReadLine()?.Trim().ToLower();
+            input = Console.ReadLine()?.Trim().ToLower();
         }
 
-        var result = Convert(expression);
+        var result = Convert(input);
         Console.WriteLine("Результат: " + string.Join(" ", result));
     }
 
@@ -47,7 +47,7 @@ public static class InfixToPostfixConverter
     private static List<string> Convert(string expression)
     {
         var result = new List<string>();
-        var stack = new CustomStack<string>();
+        var stack = new CustomStack<string>(true);
 
         var tokens = Tokenize(expression);
 
@@ -85,7 +85,9 @@ public static class InfixToPostfixConverter
                 stack.Remove(); // удаляем "("
 
                 if (stack.Count > 0 && IsFunction(stack.Peek().Value))
+                {
                     result.Add(stack.Remove().Value);
+                }
             }
         }
 
