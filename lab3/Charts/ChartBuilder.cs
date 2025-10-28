@@ -1,8 +1,6 @@
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Legends;
-using OxyPlot.Series;
-using OxyPlot.SkiaSharp;
+using System.Text;
+using Plotly.NET;
+using Chart = Plotly.NET.CSharp.Chart;
 
 namespace lab3.Charts;
 
@@ -12,60 +10,145 @@ public static class ChartBuilder
 
     public static void Build2DLineChart(ChartData cd)
     {
+        Console.WriteLine($"{cd.Title} – {cd.TotalExecTimeSeconds}s");
+
         var outputDir = Path.Combine(AppContext.BaseDirectory, $"plots_{StartTime:s}");
         Directory.CreateDirectory(outputDir);
 
-        var filePath = Path.Combine(outputDir, $"{cd.Title}.png");
+        var filePath = Path.Combine(outputDir, $"{Sanitize(cd.Title)}.html");
         if (File.Exists(filePath))
         {
-            Console.WriteLine($"Файл {filePath} уже существует");
-            return;
+            Console.WriteLine($"Файл {filePath} уже существует. Перезаписать? (y/n)");
+            while (true)
+            {
+                var choice = Console.ReadLine()?.Trim().ToLower();
+                if (choice == "y")
+                {
+                    break;
+                }
+
+                if (choice == "n")
+                {
+                    Console.WriteLine("Операция отменена пользователем.");
+                    return;
+                }
+
+                Console.WriteLine("Пожалуйста, введите 'y' или 'n'.");
+            }
         }
 
-        var legend = new Legend
-        {
-            LegendTitle = "Легенда",
-            LegendPosition = LegendPosition.RightTop,
-            LegendPlacement = LegendPlacement.Outside,
-            LegendOrientation = LegendOrientation.Vertical,
-            LegendBackground = OxyColor.FromAColor(200, OxyColors.White),
-            LegendBorder = OxyColors.Black
-        };
+        var s1 = Chart
+            .Line<double, double, string>(
+                cd.PushHeavyResults.Select(p => p.X),
+                cd.PushHeavyResults.Select(p => p.Y),
+                Name: "PushHeavy",
+                ShowLegend: true,
+                // LineColor: Color.fromHex("#3E9BCB"),
+                LineWidth: 2.5);
 
-        var model = new PlotModel
-        {
-            Title = cd.Title,
-            Background = OxyColors.White,
-        };
-        model.Legends.Add(legend);
-        model.Axes.Add(new LinearAxis
-        {
-            Position = AxisPosition.Bottom,
-            Title = cd.XAxisTitle,
-            Minimum = cd.PushHeavyResults[0].X,
-            Maximum = cd.PushHeavyResults[^1].X
-        });
-        model.Axes.Add(new LinearAxis
-        {
-            Position = AxisPosition.Left,
-            Title = cd.YAxisTitle,
-        });
+        var s2 = Chart
+            .Line<double, double, string>(
+                cd.PopHeavyResults.Select(p => p.X),
+                cd.PopHeavyResults.Select(p => p.Y),
+                Name: "PopHeavy",
+                ShowLegend: true,
+                // LineColor: Color.fromHex("#3E9BCB"),
+                LineWidth: 2.5);
 
-        var s1 = new LineSeries { Title = "PushHeavy", StrokeThickness = 4 };
-        var s2 = new LineSeries { Title = "PopHeavy", StrokeThickness = 4 };
-        var s3 = new LineSeries { Title = "EquallyHeavy", StrokeThickness = 4 };
+        var s3 = Chart
+            .Line<double, double, string>(
+                cd.EquallyHeavyResults.Select(p => p.X),
+                cd.EquallyHeavyResults.Select(p => p.Y),
+                Name: "EquallyHeavy",
+                ShowLegend: true,
+                // LineColor: Color.fromHex("#3E9BCB"),
+                LineWidth: 2.5);
 
-        s1.Points.AddRange(cd.PushHeavyResults);
-        s2.Points.AddRange(cd.PopHeavyResults);
-        s3.Points.AddRange(cd.EquallyHeavyResults);
-
-        model.Series.Add(s1);
-        model.Series.Add(s2);
-        model.Series.Add(s3);
-
-        PngExporter.Export(model, filePath, 2000, 1400);
+        var chart = Plotly.NET.Chart.Combine([s1, s2, s3])
+            .WithTitle(cd.Title)
+            .WithXAxisStyle(Title.init(cd.XAxisTitle))
+            .WithYAxisStyle(Title.init(cd.YAxisTitle))
+            .WithConfig(Config.init(Responsive: true));
+        var html = GenericChart.toEmbeddedHTML(chart);
+        html = EnsureResponsiveUtf8Head(html);
+        File.WriteAllText(filePath, html, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
 
         Console.WriteLine("Готово!");
         Console.WriteLine($"Файл сохранён: {filePath}");
+    }
+
+    private static string Sanitize(string name)
+    {
+        var bad = Path.GetInvalidFileNameChars();
+        return new string(name.Select(c => bad.Contains(c) ? '_' : c).ToArray());
+    }
+
+    private static string EnsureResponsiveUtf8Head(string html)
+    {
+        const string head = @"
+<meta charset=""utf-8""/>
+<meta http-equiv=""Content-Type"" content=""text/html; charset=utf-8""/>
+<meta name=""viewport"" content=""width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no""/>
+<style>
+  html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0; padding: 0;
+    overflow: hidden;            /* WKWebView любит скролл — уберём */
+  }
+  /* plotly контейнеры — на весь доступный размер */
+  .js-plotly-plot, .plot-container, .svg-container, .main-svg, .plotly {
+    width: 100% !important;
+    height: 100% !important;
+  }
+</style>
+<script>
+(function(){
+  function resizePlots(){
+    try {
+      var w = document.documentElement.clientWidth;
+      var h = document.documentElement.clientHeight;
+      var plots = document.getElementsByClassName('js-plotly-plot');
+      for (var i = 0; i < plots.length; i++) {
+        // подстраховочно обновим размеры контейнера
+        plots[i].style.width  = w + 'px';
+        plots[i].style.height = h + 'px';
+        Plotly.relayout(plots[i], { autosize: true });
+        Plotly.Plots.resize(plots[i]);
+      }
+    } catch(e) { /* noop */ }
+  }
+
+  // ResizeObserver даёт самые стабильные ресайзы в WKWebView
+  if (typeof ResizeObserver !== 'undefined') {
+    var ro = new ResizeObserver(resizePlots);
+    ro.observe(document.documentElement);
+  }
+  window.addEventListener('resize', resizePlots);
+  document.addEventListener('DOMContentLoaded', resizePlots);
+  window.addEventListener('load', resizePlots);
+})();
+</script>";
+
+        // если есть <head> — вставим сразу после открывающего тега
+        var idxHead = html.IndexOf("<head", StringComparison.OrdinalIgnoreCase);
+        if (idxHead >= 0)
+        {
+            var idxEnd = html.IndexOf('>', idxHead);
+            if (idxEnd > idxHead)
+            {
+                return html.Insert(idxEnd + 1, head);
+            }
+        }
+
+        // оборачиваем, если <head> отсутствует
+        return $@"
+<!doctype html>
+<html lang=""ru"">
+<head>{head}</head>
+<body>
+{html}
+</body>
+</html>";
     }
 }

@@ -1,5 +1,3 @@
-using OxyPlot;
-
 namespace lab3.Charts;
 
 public class ChartData

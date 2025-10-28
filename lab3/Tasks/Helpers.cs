@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using DataStructures;
 using lab3.Charts;
-using OxyPlot;
 
 namespace lab3.Tasks;
 
