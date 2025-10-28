@@ -10,7 +10,7 @@ public class CustomListQueue<T> : IDataStructure<T>
         _list.Insert(0, item);
     }
 
-    public (bool success, T? value) Remove()
+    public (bool Success, T? Value) Remove()
     {
         if (_list.Count == 0)
             return (false, default);
@@ -19,7 +19,7 @@ public class CustomListQueue<T> : IDataStructure<T>
         return (true, result);
     }
 
-    public (bool success, T? value) Peek()
+    public (bool Success, T? Value) Peek()
     {
         if (_list.Count == 0)
             return (false, default);

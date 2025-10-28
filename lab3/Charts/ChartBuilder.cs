@@ -22,17 +22,8 @@ public static class ChartBuilder
             while (true)
             {
                 var choice = Console.ReadLine()?.Trim().ToLower();
-                if (choice == "y")
-                {
-                    break;
-                }
-
-                if (choice == "n")
-                {
-                    Console.WriteLine("Операция отменена пользователем.");
-                    return;
-                }
-
+                if (choice == "y") break;
+                if (choice == "n") return;
                 Console.WriteLine("Пожалуйста, введите 'y' или 'n'.");
             }
         }
@@ -59,7 +50,7 @@ public static class ChartBuilder
 
         var html = GenericChart.toEmbeddedHTML(chart).Replace(
             "<title>Plotly.NET Datavisualization</title>",
-            $"<title>{Sanitize(cd.Title)}</title>"
+            $"<title>{Sanitize(cd.Title)}.html</title>"
         );
         html = EnsureResponsiveUtf8Head(html);
         File.WriteAllText(filePath, html, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));

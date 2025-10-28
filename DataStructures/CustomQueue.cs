@@ -10,14 +10,14 @@ public class CustomQueue<T> : IDataStructure<T>
         _queue.Enqueue(item);
     }
 
-    public (bool success, T? value) Remove()
+    public (bool Success, T? Value) Remove()
     {
         if (_queue.Count == 0)
             return (false, default);
         return (true, _queue.Dequeue());
     }
 
-    public (bool success, T? value) Peek()
+    public (bool Success, T? Value) Peek()
     {
         if (_queue.Count == 0)
             return (false, default);

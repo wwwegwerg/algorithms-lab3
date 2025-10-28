@@ -10,7 +10,7 @@ public class CustomStack<T> : IDataStructure<T>
         _list.AddLast(item);
     }
 
-    public (bool success, T? value) Remove()
+    public (bool Success, T? Value) Remove()
     {
         if (_list.Last == null)
             return (false, default);
@@ -19,7 +19,7 @@ public class CustomStack<T> : IDataStructure<T>
         return (true, result);
     }
 
-    public (bool success, T? value) Peek()
+    public (bool Success, T? Value) Peek()
     {
         if (_list.Last == null)
             return (false, default);

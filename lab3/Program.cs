@@ -1,6 +1,4 @@
-﻿using lab3.Tasks;
-
-namespace lab3;
+﻿namespace lab3;
 
 public class Program
 {
@@ -22,17 +20,17 @@ public class Program
         var stackMenu = new Menu("Часть 1. Стек");
         stackMenu.Add(1, "Графики", () =>
         {
-            Taskss.Stack();
+            Tasks.Stack.Run();
             Menu.Pause();
         });
         stackMenu.Add(2, "Вычисление постфиксного выражения", () =>
         {
-            Console.WriteLine();
+            Tasks.PostfixEvaluator.Run();
             Menu.Pause();
         });
         stackMenu.Add(3, "Перевод инфиксного выражения в постфиксное", () =>
         {
-            Console.WriteLine();
+            Tasks.InfixToPostfixConverter.Run();
             Menu.Pause();
         });
 
@@ -44,7 +42,7 @@ public class Program
         var queueMenu = new Menu("Часть 2. Очередь");
         queueMenu.Add(1, "Графики", () =>
         {
-            Taskss.Queue();
+            Tasks.Queue.Run();
             Menu.Pause();
         });
 

@@ -4,8 +4,8 @@ public interface IDataStructure<T>
 {
     int Count { get; }
     void Add(T? item);
-    (bool success, T? value) Remove();
-    (bool success, T? value) Peek();
+    (bool Success, T? Value) Remove();
+    (bool Success, T? Value) Peek();
     bool IsEmpty { get; }
     void Print();
 }
