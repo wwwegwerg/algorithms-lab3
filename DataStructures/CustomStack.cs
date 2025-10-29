@@ -48,6 +48,6 @@ public class CustomStack<T> : IDataStructure<T>
 
     public override string ToString()
     {
-        return "{" + string.Join(", ", _list) + "}";
+        return "{ " + string.Join(", ", _list) + " }";
     }
 }

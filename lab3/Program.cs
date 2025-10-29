@@ -9,7 +9,7 @@ public class Program
         main.Add(2, "Часть 2. Очередь", () => GetQueueMenu().Run(showBack: true));
         main.Add(3, "Часть 3. Динамические структуры", () => GetDynamicStructsMenu().Run(showBack: true));
         main.Add(4, "Часть 4. Связный список", () => GetLinkedListMenu().Run(showBack: true));
-        main.Add(5, "Дерево", () => GetLinkedListMenu().Run(showBack: true));
+        main.Add(5, "Бинарное дерево", () => GetBinaryTreeMenu().Run(showBack: true));
         main.Add(0, "Выход", () => Environment.Exit(0));
 
         main.Run();
@@ -54,22 +54,22 @@ public class Program
         var dynamicStructsMenu = new Menu("Часть 3. Динамические структуры");
         dynamicStructsMenu.Add(1, "Список: алгоритм Кадане", () =>
         {
-            Console.WriteLine();
+            Tasks.Kadane.Run();
             Menu.Pause();
         });
         dynamicStructsMenu.Add(2, "Стек: валидация скобочных выражений", () =>
         {
-            Console.WriteLine();
+            Tasks.ParenthesesEquationValidator.Run();
             Menu.Pause();
         });
         dynamicStructsMenu.Add(3, "Очередь: скользящее среднее", () =>
         {
-            Console.WriteLine();
+            Tasks.MovingAverage.Run();
             Menu.Pause();
         });
-        dynamicStructsMenu.Add(4, "Деревья: алгоритм Хаффмана", () =>
+        dynamicStructsMenu.Add(4, "Дерево: алгоритм Хаффмана", () =>
         {
-            Console.WriteLine();
+            Tasks.Huffman.Run();
             Menu.Pause();
         });
 
@@ -82,6 +82,23 @@ public class Program
         linkedListMenu.Add(1, "Список", () =>
         {
             Console.WriteLine();
+            Menu.Pause();
+        });
+
+        return linkedListMenu;
+    }
+    
+    private static Menu GetBinaryTreeMenu()
+    {
+        var linkedListMenu = new Menu("Бинарное дерево");
+        linkedListMenu.Add(1, "Поиск в ширину", () =>
+        {
+            Tasks.BFS.Run();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(2, "Поиск в глубину", () =>
+        {
+            Tasks.DFS.Run();
             Menu.Pause();
         });
 

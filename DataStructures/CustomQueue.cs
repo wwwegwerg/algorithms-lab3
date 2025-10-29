@@ -47,6 +47,6 @@ public class CustomQueue<T> : IDataStructure<T>
 
     public override string ToString()
     {
-        return "{" + string.Join(", ", _queue.Reverse()) + "}";
+        return "{ " + string.Join(", ", _queue.Reverse()) + " }";
     }
 }

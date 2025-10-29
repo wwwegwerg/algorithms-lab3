@@ -26,6 +26,8 @@ public class TreeNode<T>
         Right = right;
         if (right != null) right.Parent = this;
     }
+
+    public override string ToString() => Value.ToString();
 }
 
 public class BinaryTree<T>
