@@ -4,7 +4,7 @@ namespace lab3.Tasks;
 
 public static class Helpers
 {
-    public static readonly List<string[]> Inputs = ReadData("input.txt");
+    public static readonly List<string[]> Inputs = ReadData("input.txt").GetRange(0, (16-6)*3);
     public static readonly string[] Filler = ReadData("filler.txt")[0];
 
     private static List<string[]> ReadData(string filePath)
@@ -23,7 +23,7 @@ public static class Helpers
             );
             result.Add(tokens);
         }
-        Console.WriteLine($"Файл {filePath} успешно прочитан.");
+        Console.WriteLine($"Файл {filePath} успешно прочитан. Считано {result.Count} строк.");
 
         return result;
     }

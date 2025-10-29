@@ -109,61 +109,111 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         last.Invalidate();
         Count--;
     }
-    
-    public void RemoveAt(int index)
+
+    public DoublyLinkedListNode<T> GetNodeAt(int index)
     {
         if (index < 0 || index >= Count)
             throw new ArgumentOutOfRangeException(nameof(index));
 
-        DoublyLinkedListNode<T>? current;
-
+        // оптимизация: идём с ближайшего конца
         if (index <= Count / 2)
         {
-            current = _head;
-            for (var i = 0; i < index; i++)
-                current = current!.Next;
+            var cur = _head!;
+            for (int i = 0; i < index; i++) cur = cur.Next!;
+            return cur;
         }
         else
         {
-            current = _tail;
-            for (var i = Count - 1; i > index; i--)
-                current = current!.Previous;
+            var cur = _tail!;
+            for (int i = Count - 1; i > index; i--) cur = cur.Previous!;
+            return cur;
         }
+    }
 
-        if (current!.Previous != null)
-            current.Previous.Next = current.Next;
-        else
-            _head = current.Next;
+    // Вставить значение ПОСЛЕ данного узла
+    public DoublyLinkedListNode<T> InsertAfter(DoublyLinkedListNode<T> node, T? value)
+    {
+        if (node == null) throw new ArgumentNullException(nameof(node));
+        var newNode = new DoublyLinkedListNode<T>(value);
 
-        if (current.Next != null)
-            current.Next.Previous = current.Previous;
-        else
-            _tail = current.Previous;
+        var next = node.Next;
+        newNode.Previous = node;
+        newNode.Next = next;
+        node.Next = newNode;
+        if (next != null) next.Previous = newNode;
+        else _tail = newNode;
 
-        current.Invalidate();
+        Count++;
+        return newNode;
+    }
+
+    // Вставить значение ПЕРЕД данным узлом
+    public DoublyLinkedListNode<T> InsertBefore(DoublyLinkedListNode<T> node, T? value)
+    {
+        if (node == null) throw new ArgumentNullException(nameof(node));
+        var newNode = new DoublyLinkedListNode<T>(value);
+
+        var prev = node.Previous;
+        newNode.Next = node;
+        newNode.Previous = prev;
+        node.Previous = newNode;
+        if (prev != null) prev.Next = newNode;
+        else _head = newNode;
+
+        Count++;
+        return newNode;
+    }
+
+    // Удалить КОНКРЕТНЫЙ узел (любой: первый/средний/последний)
+    public void RemoveNode(DoublyLinkedListNode<T> node)
+    {
+        if (node == null) throw new ArgumentNullException(nameof(node));
+
+        var prev = node.Previous;
+        var next = node.Next;
+
+        if (prev != null) prev.Next = next;
+        else _head = next;
+        if (next != null) next.Previous = prev;
+        else _tail = prev;
+
+        node.Invalidate();
         Count--;
     }
 
+    // Удалить по индексу
+    public void RemoveAt(int index) => RemoveNode(GetNodeAt(index));
 
-    public bool Contains(T? value)
+    // Вставить по индексу: перед элементом с данным индексом (или в конец, если index == Count)
+    public void InsertAt(int index, T? value)
     {
-        return Find(value) != null;
-    }
+        if (index < 0 || index > Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
 
-    public DoublyLinkedListNode<T>? Find(T? value)
-    {
-        var current = _head;
-        var c = EqualityComparer<T?>.Default;
-
-        while (current != null)
+        if (index == 0)
         {
-            if (c.Equals(current.Value, value))
-                return current;
-
-            current = current.Next;
+            AddFirst(value);
+            return;
         }
 
-        return null;
+        if (index == Count)
+        {
+            AddLast(value);
+            return;
+        }
+
+        InsertBefore(GetNodeAt(index), value);
+    }
+
+    // Поиск индекса первого вхождения (или -1)
+    public int IndexOf(T? value)
+    {
+        var c = EqualityComparer<T?>.Default;
+        int i = 0;
+        for (var cur = _head; cur != null; cur = cur.Next, i++)
+            if (c.Equals(cur.Value, value))
+                return i;
+        return -1;
     }
 
     public override string ToString()

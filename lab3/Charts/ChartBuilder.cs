@@ -10,12 +10,13 @@ public static class ChartBuilder
 
     public static void Build2DLineChart(ChartData cd)
     {
-        Console.WriteLine($"{cd.Title} – {cd.TotalExecTimeSeconds}s");
+        var dataSetSize = Math.Log2(cd.Results[0].Mesuarements[^1].X);
+        Console.WriteLine($"{cd.Title} – {dataSetSize} – {cd.TotalExecTimeSeconds}s");
 
         var outputDir = Path.Combine(AppContext.BaseDirectory, $"plots_{StartTime:s}");
         Directory.CreateDirectory(outputDir);
 
-        var filePath = Path.Combine(outputDir, $"{Sanitize(cd.Title)}.html");
+        var filePath = Path.Combine(outputDir, $"{Sanitize(cd.Title)} - {cd.TotalExecTimeSeconds}s.html");
         if (File.Exists(filePath))
         {
             Console.WriteLine($"Файл {filePath} уже существует. Перезаписать? (y/n)");
@@ -43,7 +44,7 @@ public static class ChartBuilder
         }
 
         var chart = Plotly.NET.Chart.Combine(gCharts)
-            .WithTitle(cd.Title)
+            .WithTitle($"{cd.Title} – {dataSetSize} – {cd.TotalExecTimeSeconds}s")
             .WithXAxisStyle(Title.init(cd.XAxisTitle))
             .WithYAxisStyle(Title.init(cd.YAxisTitle))
             .WithConfig(Config.init(Responsive: true));

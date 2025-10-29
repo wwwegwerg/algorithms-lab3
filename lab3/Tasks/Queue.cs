@@ -11,8 +11,8 @@ public class Queue
         var cd = BenchQueue(5, 5);
         ChartBuilder.Build2DLineChart(cd);
     }
-
-    public static ChartData BenchQueue(
+    
+    private static ChartData BenchQueue(
         int warmupCount,
         int repetitionCount)
     {

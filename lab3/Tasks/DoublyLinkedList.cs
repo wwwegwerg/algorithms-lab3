@@ -8,275 +8,234 @@ public static class DoublyLinkedList
     {
     }
 
-    // -----------------------------
-    // 1) Развернуть список L
-    // -----------------------------
+    // 1) Разворот списка L (обмен значений двумя указателями)
     public static void ReverseInPlace<T>(DoublyLinkedList<T> list)
     {
-        var buffer = new List<T>(list.Count);
-        foreach (var v in list)
-            buffer.Add(v);
+        if (list.Count <= 1) return;
 
-        list.Clear();
-        for (var i = buffer.Count - 1; i >= 0; i--)
-            list.AddLast(buffer[i]);
+        var left = list.First!;
+        var right = list.Last!;
+        int steps = list.Count / 2;
+
+        for (int i = 0; i < steps; i++)
+        {
+            (left.Value, right.Value) = (right.Value, left.Value);
+            left = left.Next!;
+            right = right.Previous!;
+        }
     }
 
-    // ----------------------------------------------------------
-    // 2) Перенести в начало последний элемент / в конец первый
-    // ----------------------------------------------------------
+    // 2) Перенести в начало последний элемент
     public static void MoveLastToFront<T>(DoublyLinkedList<T> list)
     {
         if (list.Count <= 1) return;
-        var val = list.Last!.Value;
-        list.RemoveLast();
-        list.AddFirst(val);
+        var last = list.Last!;
+        list.RemoveNode(last);
+        list.AddFirst(last.Value);
     }
 
+    // 2) Перенести в конец первый элемент
     public static void MoveFirstToEnd<T>(DoublyLinkedList<T> list)
     {
         if (list.Count <= 1) return;
-        var val = list.First!.Value;
-        list.RemoveFirst();
-        list.AddLast(val);
+        var first = list.First!;
+        list.RemoveNode(first);
+        list.AddLast(first.Value);
     }
 
-    // --------------------------------------------
-    // 3) Кол-во различных элементов (для int-списка)
-    // --------------------------------------------
+    // 3) Количество различных элементов (int), без HashSet: O(n^2)
     public static int CountDistinct(DoublyLinkedList<int> list)
     {
-        var set = new HashSet<int>();
-        foreach (var v in list) set.Add(v);
-        return set.Count;
+        int distinct = 0;
+        int i = 0;
+        for (var cur = list.First; cur != null; cur = cur.Next, i++)
+        {
+            bool seenBefore = false;
+            int j = 0;
+            for (var left = list.First; left != cur; left = left!.Next, j++)
+            {
+                if (left!.Value == cur.Value)
+                {
+                    seenBefore = true;
+                    break;
+                }
+            }
+
+            if (!seenBefore) distinct++;
+        }
+
+        return distinct;
     }
 
-    // ----------------------------------------------------------
-    // 4) Удалить из списка L неуникальные элементы (int-список)
-    // ----------------------------------------------------------
+    // 4) Удалить из списка L неуникальные элементы (оставить только те, что встречаются ровно 1 раз)
+    // Без словарей: два вложенных прохода, затем удаление всех повторов.
     public static void RemoveNonUnique(DoublyLinkedList<int> list)
     {
-        var freq = new Dictionary<int, int>();
-        foreach (var val in list)
-            freq[val] = freq.GetValueOrDefault(val, 0) + 1;
-
-        var i = 0;
-        var current = list.First;
-        while (current != null)
+        // Идём по значениям; для каждого, если встречается !=1, удаляем все его вхождения.
+        for (var cur = list.First; cur != null;)
         {
-            var next = current.Next;
-            if (freq[current.Value] > 1)
-                list.RemoveAt(i);
-            else
-                i++;
-            current = next;
+            int value = cur.Value;
+            int count = 0;
+
+            // Подсчитать количество вхождений value
+            for (var probe = list.First; probe != null; probe = probe.Next)
+                if (probe.Value == value)
+                    count++;
+
+            // Сохраним следующий до возможных удалений
+            var nextDistinct = cur.Next;
+
+            if (count != 1)
+            {
+                // удалить все вхождения value
+                for (var probe = list.First; probe != null;)
+                {
+                    var nxt = probe.Next;
+                    if (probe.Value == value) list.RemoveNode(probe);
+                    probe = nxt;
+                }
+            }
+
+            cur = nextDistinct;
+            // пропускаем значения, которых уже нет или которые мы уже обработали
+            while (cur != null && cur.Value == value) cur = cur.Next;
         }
     }
 
-    // --------------------------------------------------------------------
-    // 5) Вставка списка самого в себя после первого вхождения числа x (int)
-    // --------------------------------------------------------------------
+    // 5) Вставить список самого в себя сразу после первого вхождения числа x (int)
+    // Без буферов: вставляем по одному, читая "оригинальную" часть.
     public static void InsertSelfAfterFirstX(DoublyLinkedList<int> list, int x)
     {
         if (list.Count == 0) return;
-
-        var snapshot = ToList(list);
-        var idx = snapshot.FindIndex(v => v == x);
+        int idx = list.IndexOf(x);
         if (idx == -1) return;
 
-        var result = new List<int>(snapshot.Count * 2);
-        for (var i = 0; i < snapshot.Count; i++)
-        {
-            result.Add(snapshot[i]);
-            if (i == idx)
-                result.AddRange(snapshot);
-        }
+        // фиксируем исходную длину — столько элементов надо вставить копией
+        int originalCount = list.Count;
 
-        list.Clear();
-        foreach (var v in result) list.AddLast(v);
+        // Вставляем последовательные значения исходной "первой половины"
+        // Берём по индексу i (0..originalCount-1) и вставляем после позиции (idx + k)
+        // ВАЖНО: брать значение всегда из первых originalCount узлов
+        for (int k = 0; k < originalCount; k++)
+        {
+            // читаем значение из "старого" сегмента (он всё ещё первые originalCount узлов)
+            var value = list.GetNodeAt(k).Value;
+
+            // позиция вставки: сразу после x + уже вставленных k элементов
+            list.InsertAt(idx + 1 + k, value);
+        }
     }
 
-    // ------------------------------------------------------------------------------------
-    // 6) Вставить элемент E в неубывающий список L так, чтобы порядок сохранился (generic)
-    // ------------------------------------------------------------------------------------
+    // 6) Вставить элемент E в неубывающий список L так, чтобы порядок сохранился
     public static void InsertSortedNonDecreasing<T>(DoublyLinkedList<T> list, T item, IComparer<T>? comparer = null)
     {
         comparer ??= Comparer<T>.Default;
 
-        var result = new DoublyLinkedList<T>();
-        var inserted = false;
-
-        foreach (var v in list)
+        // найти первую позицию, где v >= item
+        int pos = 0;
+        var cur = list.First;
+        while (cur != null && comparer.Compare(cur.Value!, item) < 0)
         {
-            if (!inserted && comparer.Compare(item, v) <= 0)
-            {
-                result.AddLast(item);
-                inserted = true;
-            }
-
-            result.AddLast(v);
+            cur = cur.Next;
+            pos++;
         }
 
-        if (!inserted) result.AddLast(item);
-
-        list.Clear();
-        foreach (var v in result) list.AddLast(v);
+        if (cur == null) list.AddLast(item);
+        else list.InsertBefore(cur, item);
     }
 
-    // -----------------------------------------------------------
-    // 7) Удалить из списка L все элементы, равные E. Возврат count
-    // -----------------------------------------------------------
-    public static int RemoveAll<T>(DoublyLinkedList<T> list, T value)
+    // 7) Удалить из списка L все элементы, равные E
+    public static void RemoveAll<T>(DoublyLinkedList<T> list, T value)
     {
         var eq = EqualityComparer<T>.Default;
-        var removed = 0;
-        var keep = new List<T>();
-
-        foreach (var v in list)
+        for (var cur = list.First; cur != null;)
         {
-            if (eq.Equals(v, value)) removed++;
-            else keep.Add(v);
+            var nxt = cur.Next;
+            if (eq.Equals(cur.Value!, value)) list.RemoveNode(cur);
+            cur = nxt;
         }
-
-        if (removed > 0)
-        {
-            list.Clear();
-            foreach (var v in keep) list.AddLast(v);
-        }
-
-        return removed;
     }
 
-    // ------------------------------------------------------------------
-    // 8) Вставить новый элемент F перед первым вхождением элемента E
-    //    Возвращает true, если вставка была выполнена
-    // ------------------------------------------------------------------
-    public static bool InsertBeforeFirst<T>(DoublyLinkedList<T> list, T e, T f)
+    // 8) Вставить в список L новый элемент F ПЕРЕД первым вхождением элемента E (если E есть)
+    public static bool InsertFBeforeFirstE<T>(DoublyLinkedList<T> list, T e, T f)
     {
-        var eq = EqualityComparer<T>.Default;
-        var result = new DoublyLinkedList<T>();
-        var inserted = false;
-
-        foreach (var v in list)
+        for (var cur = list.First; cur != null; cur = cur.Next)
         {
-            if (!inserted && eq.Equals(v, e))
+            if (EqualityComparer<T>.Default.Equals(cur.Value!, e))
             {
-                result.AddLast(f);
-                inserted = true;
+                list.InsertBefore(cur, f);
+                return true;
             }
-
-            result.AddLast(v);
         }
 
-        if (!inserted) return false;
-
-        list.Clear();
-        foreach (var v in result) list.AddLast(v);
-        return true;
+        return false;
     }
 
-    // ---------------------------------------------------------
-    // 9) Дописать к списку L список E (оба — списки целых чисел)
-    //    Чтение из файла делайте в main; при желании — вспомогалка ниже
-    // ---------------------------------------------------------
+    // 9) Дописать к списку L список E (оба — целые числа)
     public static void AppendList(DoublyLinkedList<int> L, DoublyLinkedList<int> E)
     {
-        foreach (var v in E) L.AddLast(v);
+        for (var cur = E.First; cur != null; cur = cur.Next)
+            L.AddLast(cur.Value);
     }
 
-    // (опционально) удобная функция чтения int-списка из файла (по одному числу в строке)
-    public static DoublyLinkedList<int> ReadIntListFromFile(string path)
-    {
-        var list = new DoublyLinkedList<int>();
-        foreach (var line in File.ReadLines(path))
-        {
-            if (int.TryParse(line, out var val))
-                list.AddLast(val);
-        }
-        return list;
-    }
-
-    // --------------------------------------------------------------------------------------------
-    // 10) Разбить список целых на два по первому вхождению заданного числа delim.
-    //     Возвращает два новых списка: L1 — до delim, L2 — после delim.
-    //     Если delim нет, L2 пуст, L1 = копия исходного. Исходный список не меняется.
-    // --------------------------------------------------------------------------------------------
+    // 10) Разбить список целых на два по первому вхождению числа delim.
+    //      L1 — до delim, L2 — после delim. Сам delim исключаем.
     public static void SplitByFirst(DoublyLinkedList<int> source, int delim,
         out DoublyLinkedList<int> L1, out DoublyLinkedList<int> L2)
     {
         L1 = new DoublyLinkedList<int>();
         L2 = new DoublyLinkedList<int>();
-        var found = false;
 
-        foreach (var v in source)
+        bool found = false;
+        for (var cur = source.First; cur != null; cur = cur.Next)
         {
-            if (!found && v == delim)
+            if (!found && cur.Value == delim)
             {
                 found = true;
-                continue; // сам разделитель не включаем
+                continue;
             }
 
-            if (!found) L1.AddLast(v);
-            else L2.AddLast(v);
-        }
-
-        if (!found)
-        {
-            // Нужно, чтобы L1 была копией исходного, а L2 — пустой (уже так).
-            L1 = new DoublyLinkedList<int>();
-            foreach (var v in source) L1.AddLast(v);
-            L2 = new DoublyLinkedList<int>();
+            if (!found) L1.AddLast(cur.Value);
+            else L2.AddLast(cur.Value);
         }
     }
 
-    // -------------------------------------------------------
-    // 11) Удвоить список: приписать к концу его собственную копию
-    // -------------------------------------------------------
+    // 11) Удвоить список: приписать в конец его собственную копию
     public static void DoubleSelf<T>(DoublyLinkedList<T> list)
     {
-        var snapshot = ToList(list);
-        foreach (var v in snapshot) list.AddLast(v);
+        int originalCount = list.Count;
+        // берём значения из первых originalCount узлов и добавляем в конец
+        var cur = list.First;
+        for (int i = 0; i < originalCount; i++, cur = cur!.Next)
+            list.AddLast(cur!.Value);
     }
 
-    // -------------------------------------------------------
-    // 12) Поменять местами два элемента списка (два варианта)
-    //     а) по индексам (0-based)
-    //     б) по значениям — первые вхождения a и b
-    // -------------------------------------------------------
+    // 12) Поменять местами два элемента списка:
+    //     (a) по индексам
     public static bool SwapByIndex<T>(DoublyLinkedList<T> list, int i, int j)
     {
-        if (i == j) return true;
         if (i < 0 || j < 0 || i >= list.Count || j >= list.Count) return false;
-        if (i > j) (i, j) = (j, i);
-
-        var arr = ToList(list);
-        (arr[i], arr[j]) = (arr[j], arr[i]);
-
-        list.Clear();
-        foreach (var v in arr) list.AddLast(v);
+        if (i == j) return true;
+        var ni = list.GetNodeAt(i);
+        var nj = list.GetNodeAt(j);
+        (ni.Value, nj.Value) = (nj.Value, ni.Value);
         return true;
     }
 
+    //     (b) по значениям — первые вхождения a и b
     public static bool SwapByValue<T>(DoublyLinkedList<T> list, T a, T b)
     {
-        var arr = ToList(list);
-        var ia = arr.FindIndex(v => EqualityComparer<T>.Default.Equals(v, a));
-        var ib = arr.FindIndex(v => EqualityComparer<T>.Default.Equals(v, b));
-        if (ia == -1 || ib == -1) return false;
+        if (EqualityComparer<T>.Default.Equals(a, b)) return true;
 
-        (arr[ia], arr[ib]) = (arr[ib], arr[ia]);
-        list.Clear();
-        foreach (var v in arr) list.AddLast(v);
+        DoublyLinkedListNode<T>? na = null, nb = null;
+        for (var cur = list.First; cur != null && (na == null || nb == null); cur = cur.Next)
+        {
+            if (na == null && EqualityComparer<T>.Default.Equals(cur.Value, a)) na = cur;
+            else if (nb == null && EqualityComparer<T>.Default.Equals(cur.Value, b)) nb = cur;
+        }
+
+        if (na == null || nb == null) return false;
+        (na.Value, nb.Value) = (nb.Value, na.Value);
         return true;
-    }
-
-    // ---------------------------------
-    // Вспомогательная приватная утилита
-    // ---------------------------------
-    private static List<T> ToList<T>(DoublyLinkedList<T> list)
-    {
-        var res = new List<T>(list.Count);
-        foreach (var v in list) res.Add(v);
-        return res;
     }
 }
