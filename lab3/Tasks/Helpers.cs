@@ -23,6 +23,7 @@ public static class Helpers
             );
             result.Add(tokens);
         }
+        Console.WriteLine($"Файл {filePath} успешно прочитан.");
 
         return result;
     }

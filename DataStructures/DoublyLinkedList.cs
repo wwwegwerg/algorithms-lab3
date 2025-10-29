@@ -109,6 +109,41 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         last.Invalidate();
         Count--;
     }
+    
+    public void RemoveAt(int index)
+    {
+        if (index < 0 || index >= Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+
+        DoublyLinkedListNode<T>? current;
+
+        if (index <= Count / 2)
+        {
+            current = _head;
+            for (var i = 0; i < index; i++)
+                current = current!.Next;
+        }
+        else
+        {
+            current = _tail;
+            for (var i = Count - 1; i > index; i--)
+                current = current!.Previous;
+        }
+
+        if (current!.Previous != null)
+            current.Previous.Next = current.Next;
+        else
+            _head = current.Next;
+
+        if (current.Next != null)
+            current.Next.Previous = current.Previous;
+        else
+            _tail = current.Previous;
+
+        current.Invalidate();
+        Count--;
+    }
+
 
     public bool Contains(T? value)
     {
