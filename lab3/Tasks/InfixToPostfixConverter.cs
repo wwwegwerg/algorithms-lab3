@@ -63,10 +63,10 @@ public static class InfixToPostfixConverter
             }
             else if (IsOperator(token))
             {
-                while (stack.Count > 0 && IsOperator(stack.Top().Value) &&
-                       Precedence[stack.Top().Value] >= Precedence[token])
+                while (!stack.IsEmpty && IsOperator(stack.Top()!) &&
+                       Precedence[stack.Top()!] >= Precedence[token])
                 {
-                    result.Add(stack.Pop().Value);
+                    result.Add(stack.Pop()!);
                 }
 
                 stack.Push(token);
@@ -77,23 +77,23 @@ public static class InfixToPostfixConverter
             }
             else if (token == ")")
             {
-                while (stack.Count > 0 && stack.Top().Value != "(")
+                while (!stack.IsEmpty && stack.Top() != "(")
                 {
-                    result.Add(stack.Pop().Value);
+                    result.Add(stack.Pop()!);
                 }
 
                 stack.Pop(); // удаляем "("
 
-                if (stack.Count > 0 && IsFunction(stack.Top().Value))
+                if (!stack.IsEmpty && IsFunction(stack.Top()!))
                 {
-                    result.Add(stack.Pop().Value);
+                    result.Add(stack.Pop()!);
                 }
             }
         }
 
-        while (stack.Count > 0)
+        while (!stack.IsEmpty)
         {
-            result.Add(stack.Pop().Value);
+            result.Add(stack.Pop()!);
         }
 
         return result;

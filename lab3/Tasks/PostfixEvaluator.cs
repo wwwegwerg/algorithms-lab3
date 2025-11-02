@@ -64,7 +64,7 @@ public static class PostfixEvaluator
                 if (stack.Count < 1)
                     throw new InvalidOperationException($"Недостаточно операндов для унарной операции '{token}'.");
 
-                var a = stack.Pop().Value;
+                var a = stack.Pop();
                 var res = unary(a);
                 stack.Push(res);
                 continue;
@@ -75,8 +75,8 @@ public static class PostfixEvaluator
                 if (stack.Count < 2)
                     throw new InvalidOperationException($"Недостаточно операндов для бинарной операции '{token}'.");
 
-                var b = stack.Pop().Value;
-                var a = stack.Pop().Value;
+                var b = stack.Pop();
+                var a = stack.Pop();
                 var res = binary(a, b);
                 stack.Push(res);
                 continue;
@@ -87,6 +87,6 @@ public static class PostfixEvaluator
 
         if (stack.Count != 1)
             throw new InvalidOperationException("Ошибка в выражении.");
-        return stack.Pop().Value;
+        return stack.Pop();
     }
 }

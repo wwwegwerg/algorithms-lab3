@@ -34,9 +34,9 @@ public static class DFS
         var stack = new CustomStack<TreeNode<T>>(true);
         stack.Push(tree.Root);
 
-        while (stack.Count > 0)
+        while (!stack.IsEmpty)
         {
-            var current = stack.Pop().Value;
+            var current = stack.Pop();
             if (current == null)
             {
                 sb.Append('*');

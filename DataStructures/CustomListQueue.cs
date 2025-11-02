@@ -18,25 +18,21 @@ public class CustomListQueue<T>
         if (ShowOutput) Print();
     }
 
-    public (bool Success, T? Value) Dequeue()
+    public T? Dequeue()
     {
-        if (_list.Count == 0)
-        {
-            if (ShowOutput) Print();
-            return (false, default);
-        }
-
+        if (_list.Count == 0) 
+            throw new InvalidOperationException("The Queue is empty.");
         var result = _list[0];
         _list.RemoveAt(0);
         if (ShowOutput) Print();
-        return (true, result);
+        return result;
     }
 
-    public (bool Success, T? Value) Peek()
+    public T? Peek()
     {
         if (_list.Count == 0)
-            return (false, default);
-        return (true, _list[0]);
+            throw new InvalidOperationException("The Queue is empty.");
+        return _list[0];
     }
 
     public bool IsEmpty => _list.Count == 0;

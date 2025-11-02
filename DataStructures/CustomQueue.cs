@@ -18,24 +18,20 @@ public class CustomQueue<T>
         if (ShowOutput) Print();
     }
 
-    public (bool Success, T? Value) Dequeue()
+    public T? Dequeue()
     {
         if (_queue.Count == 0)
-        {
-            if (ShowOutput) Print();
-            return (false, default);
-        }
-
+            throw new InvalidOperationException("The Queue is empty.");
         var result = _queue.Dequeue();
         if (ShowOutput) Print();
-        return (true, result);
+        return result;
     }
 
-    public (bool Success, T? Value) Peek()
+    public T? Peek()
     {
         if (_queue.Count == 0)
-            return (false, default);
-        return (true, _queue.Peek());
+            throw new InvalidOperationException("The Queue is empty.");
+        return _queue.Peek();
     }
 
     public bool IsEmpty => _queue.Count == 0;

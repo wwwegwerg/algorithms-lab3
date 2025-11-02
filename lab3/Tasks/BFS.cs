@@ -34,9 +34,9 @@ public static class BFS
         var queue = new CustomListQueue<TreeNode<T>>(true);
         queue.Enqueue(tree.Root);
 
-        while (queue.Count > 0)
+        while (!queue.IsEmpty)
         {
-            var current = queue.Dequeue().Value;
+            var current = queue.Dequeue();
             if (current == null)
             {
                 sb.Append('*');

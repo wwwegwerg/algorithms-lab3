@@ -48,7 +48,7 @@ public static class MovingAverage
             sum += value;
 
             if (window.Count > windowSize)
-                sum -= window.Dequeue().Value;
+                sum -= window.Dequeue();
 
             if (window.Count == windowSize)
                 result.Add(sum / windowSize);

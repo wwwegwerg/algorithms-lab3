@@ -62,8 +62,8 @@ public static class Queue
     private static CustomQueue<string> GetCustomQueue()
     {
         var queue = new CustomQueue<string>(false);
-        var stackSize = Helpers.Inputs[^1].Length;
-        for (var i = 0; i < stackSize; i++)
+        var queueSize = Helpers.Inputs[^1].Length;
+        for (var i = 0; i < queueSize; i++)
         {
             queue.Enqueue(Helpers.Filler[i]);
         }
@@ -74,8 +74,8 @@ public static class Queue
     private static CustomListQueue<string> GetCustomListQueue()
     {
         var queue = new CustomListQueue<string>(false);
-        var stackSize = Helpers.Inputs[^1].Length;
-        for (var i = 0; i < stackSize; i++)
+        var queueSize = Helpers.Inputs[^1].Length;
+        for (var i = 0; i < queueSize; i++)
         {
             queue.Enqueue(Helpers.Filler[i]);
         }

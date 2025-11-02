@@ -18,25 +18,21 @@ public class CustomStack<T>
         if (ShowOutput) Print();
     }
 
-    public (bool Success, T? Value) Pop()
+    public T? Pop()
     {
         if (_list.First == null)
-        {
-            if (ShowOutput) Print();
-            return (false, default);
-        }
-
+            throw new InvalidOperationException("The Stack is empty.");
         var result = _list.First.Value;
         _list.RemoveFirst();
         if (ShowOutput) Print();
-        return (true, result);
+        return result;
     }
 
-    public (bool Success, T? Value) Top()
+    public T? Top()
     {
         if (_list.First == null)
-            return (false, default);
-        return (true, _list.First.Value);
+            throw new InvalidOperationException("The Stack is empty.");
+        return _list.First.Value;
     }
 
     public bool IsEmpty => _list.Count == 0;

@@ -36,7 +36,7 @@ public static class ParenthesesEquationValidator
             }
             else if (Pairs.ContainsValue(c))
             {
-                if (stack.Count == 0 || Pairs[stack.Pop().Value] != c)
+                if (stack.IsEmpty || Pairs[stack.Pop()] != c)
                 {
                     return false;
                 }

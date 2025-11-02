@@ -46,22 +46,17 @@ public static class Helpers
                 }
                 case '2':
                 {
-                    var (status, value) = ds.Pop();
-                    var text = status ? value : "empty";
-                    if (showOutput) Console.WriteLine($"removed value: {text}");
+                    if (showOutput) Console.WriteLine($"removed value: {ds.Pop()}");
                     break;
                 }
                 case '3':
                 {
-                    var (status, value) = ds.Top();
-                    var text = status ? value : "empty";
-                    if (showOutput) Console.WriteLine($"peeked value: {text}");
+                    if (showOutput) Console.WriteLine($"peeked value: {ds.Top()}");
                     break;
                 }
                 case '4':
                 {
-                    var isEmpty = ds.IsEmpty;
-                    if (showOutput) Console.WriteLine($"isEmpty: {isEmpty}");
+                    if (showOutput) Console.WriteLine($"isEmpty: {ds.IsEmpty}");
                     break;
                 }
                 case '5':
@@ -92,22 +87,17 @@ public static class Helpers
                 }
                 case '2':
                 {
-                    var (status, value) = ds.Dequeue();
-                    var text = status ? value : "empty";
-                    if (showOutput) Console.WriteLine($"removed value: {text}");
+                    if (showOutput) Console.WriteLine($"removed value: {ds.Dequeue()}");
                     break;
                 }
                 case '3':
                 {
-                    var (status, value) = ds.Peek();
-                    var text = status ? value : "empty";
-                    if (showOutput) Console.WriteLine($"peeked value: {text}");
+                    if (showOutput) Console.WriteLine($"peeked value: {ds.Peek()}");
                     break;
                 }
                 case '4':
                 {
-                    var isEmpty = ds.IsEmpty;
-                    if (showOutput) Console.WriteLine($"isEmpty: {isEmpty}");
+                    if (showOutput) Console.WriteLine($"isEmpty: {ds.IsEmpty}");
                     break;
                 }
                 case '5':
@@ -138,22 +128,17 @@ public static class Helpers
                 }
                 case '2':
                 {
-                    var (status, value) = ds.Dequeue();
-                    var text = status ? value : "empty";
-                    if (showOutput) Console.WriteLine($"removed value: {text}");
+                    if (showOutput) Console.WriteLine($"removed value: {ds.Dequeue()}");
                     break;
                 }
                 case '3':
                 {
-                    var (status, value) = ds.Peek();
-                    var text = status ? value : "empty";
-                    if (showOutput) Console.WriteLine($"peeked value: {text}");
+                    if (showOutput) Console.WriteLine($"peeked value: {ds.Peek()}");
                     break;
                 }
                 case '4':
                 {
-                    var isEmpty = ds.IsEmpty;
-                    if (showOutput) Console.WriteLine($"isEmpty: {isEmpty}");
+                    if (showOutput) Console.WriteLine($"isEmpty: {ds.IsEmpty}");
                     break;
                 }
                 case '5':
