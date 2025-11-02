@@ -2,12 +2,8 @@ using DataStructures;
 
 namespace lab3.Tasks;
 
-public static class DoublyLinkedList
+public static class LinkedList
 {
-    public static void Run()
-    {
-    }
-
     // 1) Разворот списка L (обмен значений двумя указателями)
     public static void ReverseInPlace<T>(DoublyLinkedList<T> list)
     {
@@ -15,9 +11,9 @@ public static class DoublyLinkedList
 
         var left = list.First!;
         var right = list.Last!;
-        int steps = list.Count / 2;
+        var steps = list.Count / 2;
 
-        for (int i = 0; i < steps; i++)
+        for (var i = 0; i < steps; i++)
         {
             (left.Value, right.Value) = (right.Value, left.Value);
             left = left.Next!;
@@ -46,25 +42,9 @@ public static class DoublyLinkedList
     // 3) Количество различных элементов (int), без HashSet: O(n^2)
     public static int CountDistinct(DoublyLinkedList<int> list)
     {
-        int distinct = 0;
-        int i = 0;
-        for (var cur = list.First; cur != null; cur = cur.Next, i++)
-        {
-            bool seenBefore = false;
-            int j = 0;
-            for (var left = list.First; left != cur; left = left!.Next, j++)
-            {
-                if (left!.Value == cur.Value)
-                {
-                    seenBefore = true;
-                    break;
-                }
-            }
-
-            if (!seenBefore) distinct++;
-        }
-
-        return distinct;
+        var set = new HashSet<int>();
+        foreach (var v in list) set.Add(v);
+        return set.Count;
     }
 
     // 4) Удалить из списка L неуникальные элементы (оставить только те, что встречаются ровно 1 раз)
@@ -72,33 +52,20 @@ public static class DoublyLinkedList
     public static void RemoveNonUnique(DoublyLinkedList<int> list)
     {
         // Идём по значениям; для каждого, если встречается !=1, удаляем все его вхождения.
-        for (var cur = list.First; cur != null;)
+        var freq = new Dictionary<int, int>();
+        foreach (var val in list)
+            freq[val] = freq.GetValueOrDefault(val, 0) + 1;
+
+        var i = 0;
+        var current = list.First;
+        while (current != null)
         {
-            int value = cur.Value;
-            int count = 0;
-
-            // Подсчитать количество вхождений value
-            for (var probe = list.First; probe != null; probe = probe.Next)
-                if (probe.Value == value)
-                    count++;
-
-            // Сохраним следующий до возможных удалений
-            var nextDistinct = cur.Next;
-
-            if (count != 1)
-            {
-                // удалить все вхождения value
-                for (var probe = list.First; probe != null;)
-                {
-                    var nxt = probe.Next;
-                    if (probe.Value == value) list.RemoveNode(probe);
-                    probe = nxt;
-                }
-            }
-
-            cur = nextDistinct;
-            // пропускаем значения, которых уже нет или которые мы уже обработали
-            while (cur != null && cur.Value == value) cur = cur.Next;
+            var next = current.Next;
+            if (freq[current.Value] > 1)
+                list.RemoveAt(i);
+            else
+                i++;
+            current = next;
         }
     }
 
@@ -107,21 +74,14 @@ public static class DoublyLinkedList
     public static void InsertSelfAfterFirstX(DoublyLinkedList<int> list, int x)
     {
         if (list.Count == 0) return;
-        int idx = list.IndexOf(x);
+        var idx = list.IndexOf(x);
         if (idx == -1) return;
 
-        // фиксируем исходную длину — столько элементов надо вставить копией
-        int originalCount = list.Count;
+        var originalCount = list.Count;
 
-        // Вставляем последовательные значения исходной "первой половины"
-        // Берём по индексу i (0..originalCount-1) и вставляем после позиции (idx + k)
-        // ВАЖНО: брать значение всегда из первых originalCount узлов
-        for (int k = 0; k < originalCount; k++)
+        for (var k = 0; k < originalCount; k++)
         {
-            // читаем значение из "старого" сегмента (он всё ещё первые originalCount узлов)
             var value = list.GetNodeAt(k).Value;
-
-            // позиция вставки: сразу после x + уже вставленных k элементов
             list.InsertAt(idx + 1 + k, value);
         }
     }
@@ -131,8 +91,7 @@ public static class DoublyLinkedList
     {
         comparer ??= Comparer<T>.Default;
 
-        // найти первую позицию, где v >= item
-        int pos = 0;
+        var pos = 0;
         var cur = list.First;
         while (cur != null && comparer.Compare(cur.Value!, item) < 0)
         {
@@ -186,7 +145,7 @@ public static class DoublyLinkedList
         L1 = new DoublyLinkedList<int>();
         L2 = new DoublyLinkedList<int>();
 
-        bool found = false;
+        var found = false;
         for (var cur = source.First; cur != null; cur = cur.Next)
         {
             if (!found && cur.Value == delim)
@@ -203,10 +162,9 @@ public static class DoublyLinkedList
     // 11) Удвоить список: приписать в конец его собственную копию
     public static void DoubleSelf<T>(DoublyLinkedList<T> list)
     {
-        int originalCount = list.Count;
-        // берём значения из первых originalCount узлов и добавляем в конец
+        var originalCount = list.Count;
         var cur = list.First;
-        for (int i = 0; i < originalCount; i++, cur = cur!.Next)
+        for (var i = 0; i < originalCount; i++, cur = cur!.Next)
             list.AddLast(cur!.Value);
     }
 

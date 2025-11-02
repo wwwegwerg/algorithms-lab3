@@ -20,11 +20,11 @@ public static class Queue
 
         var results = new List<(string SeriesTitile, IList<DataPoint> Mesuarements)>
         {
-            ("Push Heavy Custom Queue", new List<DataPoint>(dataSize)),
-            ("Pop Heavy Custom Queue", new List<DataPoint>(dataSize)),
+            ("Enqueue Heavy Custom Queue", new List<DataPoint>(dataSize)),
+            ("Dequeue Heavy Custom Queue", new List<DataPoint>(dataSize)),
             ("Equally Heavy Custom Queue", new List<DataPoint>(dataSize)),
-            ("Push Heavy C# Default Queue", new List<DataPoint>(dataSize)),
-            ("Pop Heavy C# Default Queue", new List<DataPoint>(dataSize)),
+            ("Enqueue Heavy C# Default Queue", new List<DataPoint>(dataSize)),
+            ("Dequeue Heavy C# Default Queue", new List<DataPoint>(dataSize)),
             ("Equally Heavy C# Default Queue", new List<DataPoint>(dataSize))
         };
 

@@ -6,17 +6,17 @@ namespace lab3.Charts;
 
 public static class ChartBuilder
 {
-    private static readonly DateTime StartTime = DateTime.Now;
+    private static readonly DateTime ProgramStartTime = DateTime.Now;
 
     public static void Build2DLineChart(ChartData cd)
     {
         var dataSetSize = Math.Log2(cd.Results[0].Mesuarements[^1].X);
         Console.WriteLine($"{cd.Title} – {dataSetSize} – {cd.TotalExecTimeSeconds}s");
 
-        var outputDir = Path.Combine(AppContext.BaseDirectory, $"plots_{StartTime:s}");
+        var outputDir = Path.Combine(AppContext.BaseDirectory, "plots");
         Directory.CreateDirectory(outputDir);
-
-        var filePath = Path.Combine(outputDir, $"{Sanitize(cd.Title)} - {cd.TotalExecTimeSeconds}s.html");
+        var fileName = $"{Sanitize(cd.Title)} - {ProgramStartTime:s} - {cd.TotalExecTimeSeconds}s.html";
+        var filePath = Path.Combine(outputDir, fileName);
         if (File.Exists(filePath))
         {
             Console.WriteLine($"Файл {filePath} уже существует. Перезаписать? (y/n)");
