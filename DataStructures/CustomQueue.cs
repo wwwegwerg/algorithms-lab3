@@ -1,6 +1,6 @@
 namespace DataStructures;
 
-public class CustomQueue<T> : IDataStructure<T>
+public class CustomQueue<T>
 {
     private readonly Queue<T?> _queue = new();
 
@@ -12,13 +12,13 @@ public class CustomQueue<T> : IDataStructure<T>
     public bool ShowOutput { get; set; }
     public int Count => _queue.Count;
 
-    public void Add(T? item)
+    public void Enqueue(T? item)
     {
         _queue.Enqueue(item);
         if (ShowOutput) Print();
     }
 
-    public (bool Success, T? Value) Remove()
+    public (bool Success, T? Value) Dequeue()
     {
         if (_queue.Count == 0)
         {
@@ -47,6 +47,6 @@ public class CustomQueue<T> : IDataStructure<T>
 
     public override string ToString()
     {
-        return "{ " + string.Join(", ", _queue.Reverse()) + " }";
+        return "{ " + string.Join(", ", _queue) + " }";
     }
 }

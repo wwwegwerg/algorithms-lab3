@@ -4,7 +4,8 @@ namespace lab3.Tasks;
 
 public static class Helpers
 {
-    public static readonly List<string[]> Inputs = ReadData("input.txt").GetRange(0, (16-6)*3);
+    private const int N = 17;
+    public static readonly List<string[]> Inputs = ReadData("input.txt").GetRange(0, (N - 6) * 3);
     public static readonly string[] Filler = ReadData("filler.txt")[0];
 
     private static List<string[]> ReadData(string filePath)
@@ -23,12 +24,12 @@ public static class Helpers
             );
             result.Add(tokens);
         }
-        Console.WriteLine($"Файл {filePath} успешно прочитан. Считано {result.Count} строк.");
 
+        Console.WriteLine($"Файл {filePath} успешно прочитан. Считано {result.Count} строк.");
         return result;
     }
 
-    public static void ParseData(string[] data, IDataStructure<string> ds, bool showOutput = false)
+    public static void ParseData(string[] data, CustomStack<string> ds, bool showOutput = false)
     {
         var originalOutputState = ds.ShowOutput;
         ds.ShowOutput = false;
@@ -39,13 +40,59 @@ public static class Helpers
                 case '1':
                 {
                     var value = line.Split(',')[1];
-                    ds.Add(value);
+                    ds.Push(value);
                     if (showOutput) Console.WriteLine($"added value: {value}");
                     break;
                 }
                 case '2':
                 {
-                    var (status, value) = ds.Remove();
+                    var (status, value) = ds.Pop();
+                    var text = status ? value : "empty";
+                    if (showOutput) Console.WriteLine($"removed value: {text}");
+                    break;
+                }
+                case '3':
+                {
+                    var (status, value) = ds.Top();
+                    var text = status ? value : "empty";
+                    if (showOutput) Console.WriteLine($"peeked value: {text}");
+                    break;
+                }
+                case '4':
+                {
+                    var isEmpty = ds.IsEmpty;
+                    if (showOutput) Console.WriteLine($"isEmpty: {isEmpty}");
+                    break;
+                }
+                case '5':
+                {
+                    ds.Print();
+                    break;
+                }
+            }
+        }
+
+        ds.ShowOutput = originalOutputState;
+    }
+
+    public static void ParseData(string[] data, CustomQueue<string> ds, bool showOutput = false)
+    {
+        var originalOutputState = ds.ShowOutput;
+        ds.ShowOutput = false;
+        foreach (var line in data)
+        {
+            switch (line[0])
+            {
+                case '1':
+                {
+                    var value = line.Split(',')[1];
+                    ds.Enqueue(value);
+                    if (showOutput) Console.WriteLine($"added value: {value}");
+                    break;
+                }
+                case '2':
+                {
+                    var (status, value) = ds.Dequeue();
                     var text = status ? value : "empty";
                     if (showOutput) Console.WriteLine($"removed value: {text}");
                     break;
@@ -70,6 +117,53 @@ public static class Helpers
                 }
             }
         }
+
+        ds.ShowOutput = originalOutputState;
+    }
+
+    public static void ParseData(string[] data, CustomListQueue<string> ds, bool showOutput = false)
+    {
+        var originalOutputState = ds.ShowOutput;
+        ds.ShowOutput = false;
+        foreach (var line in data)
+        {
+            switch (line[0])
+            {
+                case '1':
+                {
+                    var value = line.Split(',')[1];
+                    ds.Enqueue(value);
+                    if (showOutput) Console.WriteLine($"added value: {value}");
+                    break;
+                }
+                case '2':
+                {
+                    var (status, value) = ds.Dequeue();
+                    var text = status ? value : "empty";
+                    if (showOutput) Console.WriteLine($"removed value: {text}");
+                    break;
+                }
+                case '3':
+                {
+                    var (status, value) = ds.Peek();
+                    var text = status ? value : "empty";
+                    if (showOutput) Console.WriteLine($"peeked value: {text}");
+                    break;
+                }
+                case '4':
+                {
+                    var isEmpty = ds.IsEmpty;
+                    if (showOutput) Console.WriteLine($"isEmpty: {isEmpty}");
+                    break;
+                }
+                case '5':
+                {
+                    ds.Print();
+                    break;
+                }
+            }
+        }
+
         ds.ShowOutput = originalOutputState;
     }
 }

@@ -32,11 +32,11 @@ public static class ParenthesesEquationValidator
         {
             if (Pairs.ContainsKey(c))
             {
-                stack.Add(c);
+                stack.Push(c);
             }
             else if (Pairs.ContainsValue(c))
             {
-                if (stack.Count == 0 || Pairs[stack.Remove().Value] != c)
+                if (stack.Count == 0 || Pairs[stack.Pop().Value] != c)
                 {
                     return false;
                 }

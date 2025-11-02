@@ -59,41 +59,41 @@ public static class InfixToPostfixConverter
             }
             else if (IsFunction(token))
             {
-                stack.Add(token);
+                stack.Push(token);
             }
             else if (IsOperator(token))
             {
-                while (stack.Count > 0 && IsOperator(stack.Peek().Value) &&
-                       Precedence[stack.Peek().Value] >= Precedence[token])
+                while (stack.Count > 0 && IsOperator(stack.Top().Value) &&
+                       Precedence[stack.Top().Value] >= Precedence[token])
                 {
-                    result.Add(stack.Remove().Value);
+                    result.Add(stack.Pop().Value);
                 }
 
-                stack.Add(token);
+                stack.Push(token);
             }
             else if (token == "(")
             {
-                stack.Add(token);
+                stack.Push(token);
             }
             else if (token == ")")
             {
-                while (stack.Count > 0 && stack.Peek().Value != "(")
+                while (stack.Count > 0 && stack.Top().Value != "(")
                 {
-                    result.Add(stack.Remove().Value);
+                    result.Add(stack.Pop().Value);
                 }
 
-                stack.Remove(); // удаляем "("
+                stack.Pop(); // удаляем "("
 
-                if (stack.Count > 0 && IsFunction(stack.Peek().Value))
+                if (stack.Count > 0 && IsFunction(stack.Top().Value))
                 {
-                    result.Add(stack.Remove().Value);
+                    result.Add(stack.Pop().Value);
                 }
             }
         }
 
         while (stack.Count > 0)
         {
-            result.Add(stack.Remove().Value);
+            result.Add(stack.Pop().Value);
         }
 
         return result;

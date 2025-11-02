@@ -44,11 +44,11 @@ public static class MovingAverage
 
         foreach (var value in data)
         {
-            window.Add(value);
+            window.Enqueue(value);
             sum += value;
 
             if (window.Count > windowSize)
-                sum -= window.Remove().Value;
+                sum -= window.Dequeue().Value;
 
             if (window.Count == windowSize)
                 result.Add(sum / windowSize);

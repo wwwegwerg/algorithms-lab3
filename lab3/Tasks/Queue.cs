@@ -4,14 +4,14 @@ using lab3.Charts;
 
 namespace lab3.Tasks;
 
-public class Queue
+public static class Queue
 {
     public static void Run()
     {
         var cd = BenchQueue(5, 5);
         ChartBuilder.Build2DLineChart(cd);
     }
-    
+
     private static ChartData BenchQueue(
         int warmupCount,
         int repetitionCount)
@@ -65,7 +65,7 @@ public class Queue
         var stackSize = Helpers.Inputs[^1].Length;
         for (var i = 0; i < stackSize; i++)
         {
-            queue.Add(Helpers.Filler[i]);
+            queue.Enqueue(Helpers.Filler[i]);
         }
 
         return queue;
@@ -77,7 +77,7 @@ public class Queue
         var stackSize = Helpers.Inputs[^1].Length;
         for (var i = 0; i < stackSize; i++)
         {
-            queue.Add(Helpers.Filler[i]);
+            queue.Enqueue(Helpers.Filler[i]);
         }
 
         return queue;

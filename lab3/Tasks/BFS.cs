@@ -32,11 +32,11 @@ public static class BFS
 
         var sb = new StringBuilder();
         var queue = new CustomListQueue<TreeNode<T>>(true);
-        queue.Add(tree.Root);
+        queue.Enqueue(tree.Root);
 
         while (queue.Count > 0)
         {
-            var current = queue.Remove().Value;
+            var current = queue.Dequeue().Value;
             if (current == null)
             {
                 sb.Append('*');
@@ -44,8 +44,8 @@ public static class BFS
             }
 
             sb.Append(current.Value);
-            queue.Add(current.Left);
-            queue.Add(current.Right);
+            queue.Enqueue(current.Left);
+            queue.Enqueue(current.Right);
         }
 
         return sb.ToString();

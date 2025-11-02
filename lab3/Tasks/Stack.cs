@@ -57,7 +57,7 @@ public static class Stack
         var stackSize = Helpers.Inputs[^1].Length;
         for (var i = 0; i < stackSize; i++)
         {
-            stack.Add(Helpers.Filler[i]);
+            stack.Push(Helpers.Filler[i]);
         }
 
         return stack;

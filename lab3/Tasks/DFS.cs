@@ -32,11 +32,11 @@ public static class DFS
 
         var sb = new StringBuilder();
         var stack = new CustomStack<TreeNode<T>>(true);
-        stack.Add(tree.Root);
+        stack.Push(tree.Root);
 
         while (stack.Count > 0)
         {
-            var current = stack.Remove().Value;
+            var current = stack.Pop().Value;
             if (current == null)
             {
                 sb.Append('*');
@@ -44,8 +44,8 @@ public static class DFS
             }
 
             sb.Append(current.Value);
-            stack.Add(current.Right);
-            stack.Add(current.Left);
+            stack.Push(current.Right);
+            stack.Push(current.Left);
         }
 
         return sb.ToString();
