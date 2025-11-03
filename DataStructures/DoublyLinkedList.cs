@@ -370,7 +370,7 @@ public class DoublyLinkedList<T> : IEnumerable<T>
 
     public int Task07(T value)
     {
-        int removed = 0;
+        var removed = 0;
         var cur = First;
         while (cur != null)
         {
@@ -414,11 +414,12 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         var node = FindFirstNode(x);
         if (node == null) return new DoublyLinkedList<T>();
 
-        var second = new DoublyLinkedList<T>();
-
-        // второй список начинается с node
-        second.First = node;
-        second.Last = Last;
+        var second = new DoublyLinkedList<T>
+        {
+            // второй список начинается с node
+            First = node,
+            Last = Last
+        };
 
         // отцепляем от первого
         var before = node.Previous;
@@ -435,9 +436,10 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         }
 
         // посчитать размеры (без доп. структур)
-        int secondCount = 0;
-        for (var c = second.First; c != null; c = c.Next) secondCount++;
-        int firstCount = Count - secondCount;
+        var secondCount = 0;
+        for (var c = second.First; c != null; c = c.Next)
+            secondCount++;
+        var firstCount = Count - secondCount;
 
         second.Count = secondCount;
         Count = firstCount;
@@ -480,7 +482,8 @@ public class DoublyLinkedList<T> : IEnumerable<T>
 
         var a = GetNodeAt(i);
         var b = GetNodeAt(j);
-        if (a == null || b == null) throw new InvalidOperationException();
+        if (a == null || b == null)
+            throw new InvalidOperationException();
 
         if (a.Next == b) // соседние
         {

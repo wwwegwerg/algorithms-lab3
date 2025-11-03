@@ -73,9 +73,9 @@ public class Program
             Tasks.MovingAverage.Run();
             Menu.Pause();
         });
-        dynamicStructsMenu.Add(4, "Дерево: алгоритм Хаффмана", () =>
+        dynamicStructsMenu.Add(4, "Дерево: алгоритм поиска пути между двумя узлами", () =>
         {
-            Tasks.Huffman.Run();
+            Tasks.TreeAlgorithms.Run();
             Menu.Pause();
         });
 
@@ -152,12 +152,12 @@ public class Program
     private static Menu GetBinaryTreeMenu(string title)
     {
         var linkedListMenu = new Menu(title);
-        linkedListMenu.Add(1, "Поиск в ширину", () =>
+        linkedListMenu.Add(1, "Обход в ширину", () =>
         {
             Tasks.BFS.Run();
             Menu.Pause();
         });
-        linkedListMenu.Add(2, "Поиск в глубину", () =>
+        linkedListMenu.Add(2, "Обход в глубину (прямой / preorder)", () =>
         {
             Tasks.DFS.Run();
             Menu.Pause();
