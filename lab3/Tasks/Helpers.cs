@@ -5,10 +5,17 @@ namespace lab3.Tasks;
 public static class Helpers
 {
     private const int N = 17;
-    public static readonly List<string[]> Inputs = ReadData("input.txt").GetRange(0, (N - 6) * 3);
-    public static readonly string[] Filler = ReadData("filler.txt")[0];
 
-    private static List<string[]> ReadData(string filePath)
+    public static readonly List<(string Preset, string[] Values)> Inputs = ReadCsvData("input.csv")
+        .Where(x => x.Key <= N)
+        .Select(x => (x.Preset, x.Values))
+        .ToList();
+
+    public static readonly int StructSize = Inputs[^1].Values.Length;
+
+    public static readonly string[] Filler = ReadTxtData("filler.txt")[0];
+
+    private static List<string[]> ReadTxtData(string filePath)
     {
         var lines = File.ReadAllLines(filePath);
         var result = new List<string[]>();
@@ -23,6 +30,34 @@ public static class Helpers
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
             );
             result.Add(tokens);
+        }
+
+        Console.WriteLine($"Файл {filePath} успешно прочитан. Считано {result.Count} строк.");
+        return result;
+    }
+
+    private static List<(int Key, string Preset, string[] Values)> ReadCsvData(string filePath)
+    {
+        var lines = File.ReadAllLines(filePath);
+        var result = new List<(int Key, string Preset, string[] Values)>();
+
+        foreach (var line in lines)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            var columns = line.Split(
+                ";",
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+            );
+
+            var key = int.Parse(columns[0]);
+            var preset = columns[1];
+            var values = columns[2].Split(
+                [' ', '\t'],
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+            );
+            result.Add((key, preset, values));
         }
 
         Console.WriteLine($"Файл {filePath} успешно прочитан. Считано {result.Count} строк.");

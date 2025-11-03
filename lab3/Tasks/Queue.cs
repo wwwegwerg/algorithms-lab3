@@ -20,31 +20,37 @@ public static class Queue
 
         var results = new List<(string SeriesTitile, IList<DataPoint> Mesuarements)>
         {
-            ("Enqueue Heavy Custom Queue", new List<DataPoint>(dataSize)),
-            ("Dequeue Heavy Custom Queue", new List<DataPoint>(dataSize)),
-            ("Equally Heavy Custom Queue", new List<DataPoint>(dataSize)),
             ("Enqueue Heavy C# Default Queue", new List<DataPoint>(dataSize)),
             ("Dequeue Heavy C# Default Queue", new List<DataPoint>(dataSize)),
-            ("Equally Heavy C# Default Queue", new List<DataPoint>(dataSize))
+            ("Equally Heavy C# Default Queue", new List<DataPoint>(dataSize)),
+            ("Enqueue Heavy Custom List Queue", new List<DataPoint>(dataSize)),
+            ("Dequeue Heavy Custom List Queue", new List<DataPoint>(dataSize)),
+            ("Equally Heavy Custom List Queue", new List<DataPoint>(dataSize))
         };
 
         // Console.WriteLine($"Started at {DateTime.Now.TimeOfDay}");
 
-        Benchmark.Warmup(() => Helpers.ParseData(Helpers.Inputs[0], GetCustomQueue()), warmupCount);
+        Benchmark.Warmup(() => Helpers.ParseData(Helpers.Inputs[0].Values, GetCustomQueue()), warmupCount);
 
         var sw = Stopwatch.StartNew();
 
         for (var i = 0; i < Helpers.Inputs.Count; i++)
         {
             var input = Helpers.Inputs[i];
+            var idx = input.Preset switch
+            {
+                "add-heavy" => 0,
+                "remove-heavy" => 1,
+                "1:1" => 2,
+            };
 
-            var customQueueTask = () => Helpers.ParseData(input, GetCustomQueue());
+            var customQueueTask = () => Helpers.ParseData(input.Values, GetCustomQueue());
             var customQueueTime = Benchmark.MeasureDurationInMs(customQueueTask, repetitionCount);
-            results[i % 3].Mesuarements.Add(new DataPoint(input.Length, customQueueTime));
+            results[idx].Mesuarements.Add(new DataPoint(input.Values.Length, customQueueTime));
 
-            var customListQueueTask = () => Helpers.ParseData(input, GetCustomListQueue());
+            var customListQueueTask = () => Helpers.ParseData(input.Values, GetCustomListQueue());
             var customListQueueTime = Benchmark.MeasureDurationInMs(customListQueueTask, repetitionCount);
-            results[(i % 3) + 3].Mesuarements.Add(new DataPoint(input.Length, customListQueueTime));
+            results[idx + 3].Mesuarements.Add(new DataPoint(input.Values.Length, customListQueueTime));
         }
 
         sw.Stop();
@@ -62,8 +68,7 @@ public static class Queue
     private static CustomQueue<string> GetCustomQueue()
     {
         var queue = new CustomQueue<string>(false);
-        var queueSize = Helpers.Inputs[^1].Length;
-        for (var i = 0; i < queueSize; i++)
+        for (var i = 0; i < Helpers.StructSize; i++)
         {
             queue.Enqueue(Helpers.Filler[i]);
         }
@@ -74,8 +79,7 @@ public static class Queue
     private static CustomListQueue<string> GetCustomListQueue()
     {
         var queue = new CustomListQueue<string>(false);
-        var queueSize = Helpers.Inputs[^1].Length;
-        for (var i = 0; i < queueSize; i++)
+        for (var i = 0; i < Helpers.StructSize; i++)
         {
             queue.Enqueue(Helpers.Filler[i]);
         }

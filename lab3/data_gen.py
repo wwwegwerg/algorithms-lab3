@@ -1,31 +1,34 @@
 import argparse
-import math
+import csv
 import random
 import string
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 # ================== НАСТРОЙКИ ==================
 DEFAULT_N = 15
 OUTPUT_FILE_FILLER = "filler.txt"
-OUTPUT_FILE_COMMANDS = "input.txt"
-RNG_SEED = 42  # None для случайного; число — для воспроизводимости
+OUTPUT_FILE_COMMANDS = "input.csv"
+RNG_SEED = 42
 
 # три набора долей для трёх строк (сумма не обязана быть 100 — нормализуем)
-RATIO_SETS = [
-    {"push": 75, "pop": 15, "top": 6, "isempty": 3, "print": 1},  # push-heavy
-    {"push": 15, "pop": 75, "top": 6, "isempty": 3, "print": 1},  # pop-heavy
-    {"push": 45, "pop": 45, "top": 6, "isempty": 3, "print": 1},  # 1:1 push/pop
-]
+# RATIO_SETS = [
+#     {"push": 75, "pop": 15, "top": 6, "isempty": 3, "print": 1},  # push-heavy
+#     {"push": 15, "pop": 75, "top": 6, "isempty": 3, "print": 1},  # pop-heavy
+#     {"push": 45, "pop": 45, "top": 6, "isempty": 3, "print": 1},  # 1:1 push/pop
+# ]
+
+RATIO_SETS = {
+    "add-heavy": {"push": 75, "pop": 15, "top": 6, "isempty": 3, "print": 1},
+    "remove-heavy": {"push": 15, "pop": 75, "top": 6, "isempty": 3, "print": 1},
+    "1:1": {"push": 45, "pop": 45, "top": 6, "isempty": 3, "print": 1},
+}
 # ===============================================
 
 KEYS = ["push", "pop", "top", "isempty", "print"]
 
 
 def rand_value(rng: random.Random) -> str:
-    """Возвращает случайное значение для Push:
-    60% — число, 40% — строка из маленьких латинских букв."""
-    if rng.random() < 0.6:
-        return str(rng.randint(-(2**31), 2**31 - 1))
+    """Возвращает случайное значение для Push."""
     length = rng.randint(3, 8)
     return "".join(rng.choices(string.ascii_lowercase, k=length))
 
@@ -70,30 +73,39 @@ def main():
     )
     args = parser.parse_args()
     total_operations = 2**args.total_operations
+    max_i = args.total_operations
 
     if total_operations < 2**7:
-        print("Внимание: TOTAL_OPERATIONS меньше 2**7; процесс завершен досрочно.")
+        print("TOTAL_OPERATIONS не может быть меньше 2**7.")
         return
 
-    rng = random.Random(RNG_SEED) if RNG_SEED is not None else random.Random()
+    if RNG_SEED is None:
+        print("RND_SEED не может быть None.")
+        return
+
+    print(f"Сид: {RNG_SEED}; N: {max_i}; total_ops: {total_operations}.")
+
+    rng = random.Random(RNG_SEED)
 
     filler_tokens = [rand_value(rng) for _ in range(total_operations)]
     with open(OUTPUT_FILE_FILLER, "w", encoding="utf-8") as f:
         f.write(" ".join(filler_tokens))
-    print(f"OK: создан файл {OUTPUT_FILE_FILLER} с {total_operations} токенами.")
+    print(f"OK: создан файл {OUTPUT_FILE_FILLER} с {len(filler_tokens)} токенами.")
 
-    max_i = int(math.floor(math.log2(total_operations)))
-    lines: List[str] = []
+    rows: List[Tuple[int, str, str]] = []
     for i in range(7, max_i + 1):
         total_per_line = 2**i
-        for ratios in RATIO_SETS:
-            counts = to_counts(total_per_line, ratios)  # type: ignore
+        for preset in RATIO_SETS.keys():
+            counts = to_counts(total_per_line, RATIO_SETS[preset])  # type: ignore
             tokens = make_tokens(counts, rng)
-            lines.append(" ".join(tokens))
+            content = " ".join(tokens)
+            rows.append((i, preset, content))
 
-    with open(OUTPUT_FILE_COMMANDS, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-    print(f"OK: создан файл {OUTPUT_FILE_COMMANDS} с {len(lines)} строками.")
+    with open(OUTPUT_FILE_COMMANDS, "w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f, delimiter=";")
+        writer.writerows(rows)
+
+    print(f"OK: создан файл {OUTPUT_FILE_COMMANDS} с {len(rows)} строками.")
 
 
 if __name__ == "__main__":

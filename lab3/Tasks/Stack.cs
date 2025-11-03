@@ -27,16 +27,23 @@ public static class Stack
 
         // Console.WriteLine($"Started at {DateTime.Now.TimeOfDay}");
 
-        Benchmark.Warmup(() => Helpers.ParseData(Helpers.Inputs[0], GetCustomStack()), warmupCount);
+        Benchmark.Warmup(() => Helpers.ParseData(Helpers.Inputs[0].Values, GetCustomStack()), warmupCount);
 
         var sw = Stopwatch.StartNew();
 
         for (var i = 0; i < Helpers.Inputs.Count; i++)
         {
             var input = Helpers.Inputs[i];
-            var task = () => Helpers.ParseData(input, GetCustomStack());
+            var idx = input.Preset switch
+            {
+                "add-heavy" => 0,
+                "remove-heavy" => 1,
+                "1:1" => 2,
+            };
+
+            var task = () => Helpers.ParseData(input.Values, GetCustomStack());
             var time = Benchmark.MeasureDurationInMs(task, repetitionCount);
-            results[i % 3].Mesuarements.Add(new DataPoint(input.Length, time));
+            results[idx].Mesuarements.Add(new DataPoint(input.Values.Length, time));
         }
 
         sw.Stop();
@@ -54,8 +61,7 @@ public static class Stack
     private static CustomStack<string> GetCustomStack()
     {
         var stack = new CustomStack<string>(false);
-        var stackSize = Helpers.Inputs[^1].Length;
-        for (var i = 0; i < stackSize; i++)
+        for (var i = 0; i < Helpers.StructSize; i++)
         {
             stack.Push(Helpers.Filler[i]);
         }
