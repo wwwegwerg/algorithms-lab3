@@ -25,13 +25,13 @@ public static class DFS
         Console.WriteLine("Результат: " + result);
     }
 
-    public static string TraverseTree<T>(BinaryTree<T> tree)
+    private static string TraverseTree<T>(BinaryTree<T> tree)
     {
         if (tree.Root == null)
             return "*";
 
         var sb = new StringBuilder();
-        var stack = new CustomStack<TreeNode<T>>(true);
+        var stack = new CustomStack<TreeNode<T>?>(true);
         stack.Push(tree.Root);
 
         while (!stack.IsEmpty)

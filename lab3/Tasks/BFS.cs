@@ -25,13 +25,13 @@ public static class BFS
         Console.WriteLine("Результат: " + result);
     }
 
-    public static string TraverseTree<T>(BinaryTree<T> tree)
+    private static string TraverseTree<T>(BinaryTree<T> tree)
     {
         if (tree.Root == null)
             return "*";
 
         var sb = new StringBuilder();
-        var queue = new CustomListQueue<TreeNode<T>>(true);
+        var queue = new CustomListQueue<TreeNode<T>?>(true);
         queue.Enqueue(tree.Root);
 
         while (!queue.IsEmpty)

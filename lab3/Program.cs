@@ -4,9 +4,6 @@ public class Program
 {
     public static void Main()
     {
-        // Tasks.Queue.Run();
-        // Tasks.Stack.Run();
-
         const string titleStack = "Часть 1. Стек";
         const string titleQueue = "Часть 2. Очередь";
         const string titleDynamicStructs = "Часть 3. Динамические структуры";
@@ -88,9 +85,64 @@ public class Program
     private static Menu GetLinkedListMenu(string title)
     {
         var linkedListMenu = new Menu(title);
-        linkedListMenu.Add(1, "Список", () =>
+        linkedListMenu.Add(1, "Задача 1", () =>
         {
-            Console.WriteLine();
+            Tasks.LinkedList.RunTask01();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(2, "Задача 2", () =>
+        {
+            Tasks.LinkedList.RunTask02();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(3, "Задача 3", () =>
+        {
+            Tasks.LinkedList.RunTask03();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(4, "Задача 4", () =>
+        {
+            Tasks.LinkedList.RunTask04();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(5, "Задача 5", () =>
+        {
+            Tasks.LinkedList.RunTask05();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(6, "Задача 6", () =>
+        {
+            Tasks.LinkedList.RunTask06();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(7, "Задача 7", () =>
+        {
+            Tasks.LinkedList.RunTask07();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(8, "Задача 8", () =>
+        {
+            Tasks.LinkedList.RunTask08();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(9, "Задача 9", () =>
+        {
+            Tasks.LinkedList.RunTask09();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(10, "Задача 10", () =>
+        {
+            Tasks.LinkedList.RunTask10();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(11, "Задача 11", () =>
+        {
+            Tasks.LinkedList.RunTask11();
+            Menu.Pause();
+        });
+        linkedListMenu.Add(12, "Задача 12", () =>
+        {
+            Tasks.LinkedList.RunTask12();
             Menu.Pause();
         });
 

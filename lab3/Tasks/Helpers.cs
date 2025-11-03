@@ -4,7 +4,7 @@ namespace lab3.Tasks;
 
 public static class Helpers
 {
-    private const int N = 17;
+    private const int N = 10;
 
     public static readonly List<(string Preset, string[] Values)> Inputs = ReadCsvData("input.csv")
         .Where(x => x.Key <= N)
