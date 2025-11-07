@@ -9,8 +9,9 @@ public static class LinkedList
         var list = new DoublyLinkedList<int>();
         foreach (var x in new[] { 1, 2, 3, 4, 5 })
             list.AddLast(x);
+        Console.WriteLine(list);
         list.Task01();
-        Console.WriteLine(list); // 5 -> 4 -> 3 -> 2 -> 1 -> null
+        Console.WriteLine("Результат: " + list);
     }
 
     public static void RunTask02()
@@ -19,11 +20,13 @@ public static class LinkedList
         foreach (var s in new[] { "A", "B", "C", "D" })
             list.AddLast(s);
 
-        list.Task02a(); // D A B C
         Console.WriteLine(list);
+        list.Task02a();
+        Console.WriteLine("Последний в начало: " + list);
 
-        list.Task02b(); // A B C D
-        Console.WriteLine(list);
+        list.Task02b();
+        list.Task02b();
+        Console.WriteLine("Первый в конец: " + list);
     }
 
     public static void RunTask03()
@@ -31,7 +34,8 @@ public static class LinkedList
         var list = new DoublyLinkedList<int>();
         foreach (var x in new[] { 3, 1, 2, 3, 2, 2, 5 })
             list.AddLast(x);
-        Console.WriteLine(list.Task03()); // 4 (1,2,3,5)
+        Console.WriteLine(list);
+        Console.WriteLine("Результат: " + list.Task03());
     }
 
     public static void RunTask04()
@@ -39,18 +43,19 @@ public static class LinkedList
         var list = new DoublyLinkedList<int>();
         foreach (var x in new[] { 1, 2, 2, 3, 4, 4, 4, 5 })
             list.AddLast(x);
-        list.Task04(); // остаются: 1,3,5
         Console.WriteLine(list);
+        list.Task04();
+        Console.WriteLine("Результат: " + list);
     }
 
     public static void RunTask05()
     {
         var list = new DoublyLinkedList<int>();
-        foreach (var x in new[] { 1, 2, 3 })
+        foreach (var x in new[] { 1, 2, 3, 2 })
             list.AddLast(x);
-        // после первого 2 дописать копию всего списка: 1,2,1,2,3,3
-        list.Task05(2);
         Console.WriteLine(list);
+        list.Task05(2);
+        Console.WriteLine("Вставили после 2: " + list);
     }
 
     public static void RunTask06()
@@ -58,10 +63,13 @@ public static class LinkedList
         var list = new DoublyLinkedList<int>();
         foreach (var x in new[] { 1, 2, 2, 4, 5 })
             list.AddLast(x);
-        list.Task06(3); // 1,2,2,3,4,5
-        list.Task06(0); // 0,1,2,2,3,4,5
-        list.Task06(10); // 0,1,2,2,3,4,5,10
         Console.WriteLine(list);
+        list.Task06(3);
+        Console.WriteLine("Добавили 3: " + list);
+        list.Task06(0);
+        Console.WriteLine("Добавили 0: " + list);
+        list.Task06(10);
+        Console.WriteLine("Добавили 10: " + list);
     }
 
     public static void RunTask07()
@@ -69,39 +77,43 @@ public static class LinkedList
         var list = new DoublyLinkedList<int>();
         foreach (var x in new[] { 5, 1, 5, 2, 5, 3 })
             list.AddLast(x);
-        var n = list.Task07(5); // удалит все 5
-        Console.WriteLine($"removed={n} -> {list}");
+        Console.WriteLine(list);
+        var n = list.Task07(5);
+        Console.WriteLine($"Удалили 5: {list}");
     }
 
     public static void RunTask08()
     {
         var list = new DoublyLinkedList<string>();
-        foreach (var s in new[] { "B", "C", "D" })
+        foreach (var s in new[] { "B", "C", "D", "C" })
             list.AddLast(s);
-        list.Task08("C", "X"); // B, X, C, D
         Console.WriteLine(list);
+        list.Task08("C", "X");
+        Console.WriteLine("Вставили перед C: " + list);
     }
 
     public static void RunTask09()
     {
-        // имитация: в реальности можно считать из файла
         var L = new DoublyLinkedList<int>();
         foreach (var x in new[] { 1, 2, 3 })
             L.AddLast(x);
+        Console.WriteLine("Список L: " + L);
         var E = new DoublyLinkedList<int>();
         foreach (var x in new[] { 4, 5, 6 })
             E.AddLast(x);
-        L.Task09(E); // 1,2,3,4,5,6
+        Console.WriteLine("Список E: " + E);
+        L.Task09(E);
         Console.WriteLine(L);
     }
 
     public static void RunTask10()
     {
         var list = new DoublyLinkedList<int>();
-        foreach (var x in new[] { 10, 20, 30, 40, 50 })
+        foreach (var x in new[] { 10, 20, 30, 40, 50, 30, 60, 70 })
             list.AddLast(x);
-        // split по первому 30: list = 10,20 ; second = 30,40,50
+        Console.WriteLine(list);
         var second = list.Task10(30);
+        Console.WriteLine("Разобьем по 30");
         Console.WriteLine(list);
         Console.WriteLine(second);
     }
@@ -109,10 +121,11 @@ public static class LinkedList
     public static void RunTask11()
     {
         var list = new DoublyLinkedList<int>();
-        foreach (var x in new[] { 1, 2, 3 })
+        foreach (var x in new[] { 1, 2, 3, 3 })
             list.AddLast(x);
-        list.Task11(); // 1,2,3,1,2,3
         Console.WriteLine(list);
+        list.Task11();
+        Console.WriteLine("Результат: " + list);
     }
 
     public static void RunTask12()
@@ -120,7 +133,8 @@ public static class LinkedList
         var list = new DoublyLinkedList<char>();
         foreach (var c in new[] { 'A', 'B', 'C', 'D', 'E' })
             list.AddLast(c);
-        list.Task12(1, 3); // A D C B E
         Console.WriteLine(list);
+        list.Task12(1, 3);
+        Console.WriteLine("i=1; j=3\n" + list);
     }
 }

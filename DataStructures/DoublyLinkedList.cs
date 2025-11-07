@@ -168,10 +168,9 @@ public class DoublyLinkedList<T> : IEnumerable<T>
     {
         if (index < 0 || index >= Count) return null;
 
-        // двусторонний проход — выбираем ближе
         if (index <= Count / 2)
         {
-            int i = 0;
+            var i = 0;
             var cur = First;
             while (i < index)
             {
@@ -183,7 +182,7 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         }
         else
         {
-            int i = Count - 1;
+            var i = Count - 1;
             var cur = Last;
             while (i > index)
             {
@@ -203,7 +202,6 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         while (current != null)
         {
             var next = current.Next;
-            // меняем местами ссылки
             current.Next = current.Previous;
             current.Previous = next;
             current = next;
@@ -219,11 +217,9 @@ public class DoublyLinkedList<T> : IEnumerable<T>
 
         var oldLast = Last!;
         var newLast = oldLast.Previous!;
-        // отцепляем oldLast
         newLast.Next = null;
         Last = newLast;
 
-        // вставляем в голову
         oldLast.Previous = null;
         oldLast.Next = First;
         First!.Previous = oldLast;
@@ -237,11 +233,9 @@ public class DoublyLinkedList<T> : IEnumerable<T>
 
         var oldFirst = First!;
         var newFirst = oldFirst.Next!;
-        // отцепляем oldFirst
         newFirst.Previous = null;
         First = newFirst;
 
-        // вставляем в хвост
         oldFirst.Next = null;
         oldFirst.Previous = Last;
         Last!.Next = oldFirst;
@@ -269,33 +263,32 @@ public class DoublyLinkedList<T> : IEnumerable<T>
 
     public void Task04()
     {
-        var current = First;
-        while (current != null)
+        var cur = First;
+        while (cur != null)
         {
-            var value = current.Value;
-
-            // посчитать количество вхождений value
+            var value = cur.Value;
             var occ = 0;
             for (var r = First; r != null; r = r.Next)
-                if (EqualityComparer<T>.Default.Equals(r.Value, value))
-                    occ++;
-
-            var nextCurrent = current.Next;
-
-            if (occ > 1)
             {
-                // удалить все вхождения value
-                var r = First;
-                while (r != null)
-                {
-                    var next = r.Next;
-                    if (EqualityComparer<T>.Default.Equals(r.Value, value))
-                        RemoveNode(r);
-                    r = next;
-                }
+                if (EqualityComparer<T>.Default.Equals(r.Value, value)) occ++;
             }
 
-            current = nextCurrent;
+            if (occ == 1)
+            {
+                cur = cur.Next;
+                continue;
+            }
+
+            var x = First;
+            while (x != null)
+            {
+                var next = x.Next;
+                if (EqualityComparer<T>.Default.Equals(x.Value, value))
+                    RemoveNode(x);
+                x = next;
+            }
+
+            cur = First;
         }
     }
 
@@ -304,29 +297,32 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         var target = FindFirstNode(x);
         if (target == null) return false;
 
-        if (Count == 0) return true;
-
         var originalLast = Last!;
-        var insertAfter = target;
         var cursor = First;
+        var values = new List<T>();
 
         while (true)
         {
-            var clone = new ListNode<T>(cursor!.Value);
+            values.Add(cursor!.Value);
+            if (cursor == originalLast) break;
+            cursor = cursor.Next;
+        }
 
-            // вставка после insertAfter
+        var insertAfter = target;
+        foreach (var val in values)
+        {
+            var clone = new ListNode<T>(val);
+
             var after = insertAfter.Next;
             insertAfter.Next = clone;
             clone.Previous = insertAfter;
             clone.Next = after;
+
             if (after != null) after.Previous = clone;
             else Last = clone;
 
             insertAfter = clone;
             Count++;
-
-            if (cursor == originalLast) break;
-            cursor = cursor.Next;
         }
 
         return true;
@@ -341,7 +337,6 @@ public class DoublyLinkedList<T> : IEnumerable<T>
             return;
         }
 
-        // если value должен быть в голове
         if (cmp.Compare(value, First!.Value) <= 0)
         {
             var node = new ListNode<T>(value);
@@ -352,12 +347,12 @@ public class DoublyLinkedList<T> : IEnumerable<T>
             return;
         }
 
-        // поиск места
         var cur = First;
         while (cur!.Next != null && cmp.Compare(cur.Next.Value, value) < 0)
+        {
             cur = cur.Next;
+        }
 
-        // вставка после cur
         var n = new ListNode<T>(value);
         var after = cur.Next;
         cur.Next = n;
@@ -399,50 +394,51 @@ public class DoublyLinkedList<T> : IEnumerable<T>
 
     public void Task09(DoublyLinkedList<T> other)
     {
-        if (other == null || other.Count == 0) return;
+        if (other.Count == 0) return;
 
         var cur = other.First;
         while (cur != null)
         {
-            AddLast(cur.Value); // клонируем значения
+            AddLast(cur.Value);
             cur = cur.Next;
         }
     }
 
     public DoublyLinkedList<T> Task10(T x)
     {
-        var node = FindFirstNode(x);
-        if (node == null) return new DoublyLinkedList<T>();
+        var eq = EqualityComparer<T>.Default;
+
+        var cur = First;
+        var index = 0;
+        while (cur != null && !eq.Equals(cur.Value, x))
+        {
+            cur = cur.Next;
+            index++;
+        }
+
+        if (cur == null)
+            return new DoublyLinkedList<T>();
 
         var second = new DoublyLinkedList<T>
         {
-            // второй список начинается с node
-            First = node,
-            Last = Last
+            First = cur,
+            Last = Last,
+            Count = Count - index
         };
 
-        // отцепляем от первого
-        var before = node.Previous;
+        var before = cur.Previous;
         if (before != null)
         {
             before.Next = null;
-            node.Previous = null;
+            cur.Previous = null;
             Last = before;
+            Count = index;
         }
         else
         {
-            // разделение с головы: первый станет пустым
             First = Last = null;
+            Count = 0;
         }
-
-        // посчитать размеры (без доп. структур)
-        var secondCount = 0;
-        for (var c = second.First; c != null; c = c.Next)
-            secondCount++;
-        var firstCount = Count - secondCount;
-
-        second.Count = secondCount;
-        Count = firstCount;
 
         return second;
     }
@@ -459,7 +455,6 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         {
             var clone = new ListNode<T>(cur!.Value);
 
-            // вставка после insertAfter (в конец текущей цепочки)
             insertAfter.Next = clone;
             clone.Previous = insertAfter;
             insertAfter = clone;
@@ -475,17 +470,15 @@ public class DoublyLinkedList<T> : IEnumerable<T>
     public void Task12(int i, int j)
     {
         if (i == j) return;
-        if (i < 0 || j < 0 || i >= Count || j >= Count)
-            throw new ArgumentOutOfRangeException();
+        if (i < 0 || j < 0 || i >= Count || j >= Count) throw new ArgumentOutOfRangeException();
 
         if (i > j) (i, j) = (j, i);
 
         var a = GetNodeAt(i);
         var b = GetNodeAt(j);
-        if (a == null || b == null)
-            throw new InvalidOperationException();
+        if (a == null || b == null) throw new InvalidOperationException();
 
-        if (a.Next == b) // соседние
+        if (a.Next == b)
         {
             var pa = a.Previous;
             var nb = b.Next;
@@ -503,7 +496,6 @@ public class DoublyLinkedList<T> : IEnumerable<T>
             return;
         }
 
-        // несоседние
         var pa2 = a.Previous;
         var na2 = a.Next;
         var pb2 = b.Previous;
