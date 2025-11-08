@@ -20,20 +20,22 @@ public static class Stack
 
         var results = new List<(string SeriesTitile, IList<DataPoint> Mesuarements)>
         {
-            ("Push Heavy", new List<DataPoint>(dataSize)),
-            ("Pop Heavy", new List<DataPoint>(dataSize)),
-            ("Equally Heavy", new List<DataPoint>(dataSize))
+            ("Push Heavy C# Default Stack", new List<DataPoint>(dataSize)),
+            ("Pop Heavy C# Default Stack", new List<DataPoint>(dataSize)),
+            ("Equally Heavy C# Default Stack", new List<DataPoint>(dataSize)),
+            ("Push Heavy Custom Stack", new List<DataPoint>(dataSize)),
+            ("Pop Heavy Custom Stack", new List<DataPoint>(dataSize)),
+            ("Equally Heavy Custom Stack", new List<DataPoint>(dataSize))
         };
 
         // Console.WriteLine($"Started at {DateTime.Now.TimeOfDay}");
 
-        Benchmark.Warmup(() => Helpers.ParseData(Helpers.Inputs[0].Values, GetCustomStack()), warmupCount);
+        Benchmark.Warmup(() => Helpers.ParseData(Helpers.Inputs[0].Values, GetStackWrapper()), warmupCount);
 
         var sw = Stopwatch.StartNew();
 
-        for (var i = 0; i < Helpers.Inputs.Count; i++)
+        foreach (var input in Helpers.Inputs)
         {
-            var input = Helpers.Inputs[i];
             var idx = input.Preset switch
             {
                 "add-heavy" => 0,
@@ -41,9 +43,13 @@ public static class Stack
                 "1:1" => 2,
             };
 
-            var task = () => Helpers.ParseData(input.Values, GetCustomStack());
-            var time = Benchmark.MeasureDurationInMs(task, repetitionCount);
-            results[idx].Mesuarements.Add(new DataPoint(input.Values.Length, time));
+            var stackWrapperTask = () => Helpers.ParseData(input.Values, GetStackWrapper());
+            var stackWrapperTime = Benchmark.MeasureDurationInMs(stackWrapperTask, repetitionCount);
+            results[idx].Mesuarements.Add(new DataPoint(input.Values.Length, stackWrapperTime));
+
+            var customStackTask = () => Helpers.ParseData(input.Values, GetCustomStack());
+            var customStackTime = Benchmark.MeasureDurationInMs(customStackTask, repetitionCount);
+            results[idx + 3].Mesuarements.Add(new DataPoint(input.Values.Length, customStackTime));
         }
 
         sw.Stop();
@@ -56,6 +62,17 @@ public static class Stack
             "Количество операций",
             "Время (мс)",
             sw.Elapsed.TotalSeconds);
+    }
+    
+    private static StackWrapper<string> GetStackWrapper()
+    {
+        var stack = new StackWrapper<string>(false);
+        for (var i = 0; i < Helpers.StructSize; i++)
+        {
+            stack.Push(Helpers.Filler[i]);
+        }
+
+        return stack;
     }
 
     private static CustomStack<string> GetCustomStack()

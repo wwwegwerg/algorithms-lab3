@@ -7,15 +7,19 @@ public static class PostfixEvaluator
 {
     public static void Run()
     {
-        Console.WriteLine("Введите выражение в постфиксной форме (каждый символ через пробел)");
+        Console.WriteLine("Введите выражение в постфиксной форме");
         var input = Console.ReadLine()?.Trim().ToLower();
-        while (string.IsNullOrEmpty(input))
+        double result;
+        try
         {
-            Console.WriteLine("Введите выражение");
-            input = Console.ReadLine()?.Trim().ToLower();
+            result = Evaluate(input);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return;
         }
 
-        var result = Evaluate(input);
         Console.WriteLine("Результат: " + result);
     }
 
@@ -46,10 +50,7 @@ public static class PostfixEvaluator
     private static double Evaluate(string expression)
     {
         var stack = new CustomStack<double>(true);
-        var tokens = expression.Split(
-            [' ', '\t'],
-            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-        );
+        var tokens = Helpers.Tokenize(expression);
 
         foreach (var token in tokens)
         {

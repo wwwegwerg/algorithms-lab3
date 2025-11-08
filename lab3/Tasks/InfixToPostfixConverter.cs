@@ -7,15 +7,19 @@ public static class InfixToPostfixConverter
 {
     public static void Run()
     {
-        Console.WriteLine("Введите выражение в инфиксной форме (каждый символ через пробел)");
+        Console.WriteLine("Введите выражение в инфиксной форме");
         var input = Console.ReadLine()?.Trim().ToLower();
-        while (string.IsNullOrEmpty(input))
+        List<string> result;
+        try
         {
-            Console.WriteLine("Введите выражение");
-            input = Console.ReadLine()?.Trim().ToLower();
+            result = Convert(input);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return;
         }
 
-        var result = Convert(input);
         Console.WriteLine("Результат: " + string.Join(" ", result));
     }
 
@@ -49,7 +53,7 @@ public static class InfixToPostfixConverter
         var result = new List<string>();
         var stack = new CustomStack<string>(true);
 
-        var tokens = Tokenize(expression);
+        var tokens = Helpers.Tokenize(expression);
 
         foreach (var token in tokens)
         {
@@ -97,45 +101,5 @@ public static class InfixToPostfixConverter
         }
 
         return result;
-    }
-
-    private static string[] Tokenize(string expression)
-    {
-        var tokens = new List<string>();
-        var number = "";
-        var func = "";
-
-        for (var i = 0; i < expression.Length; i++)
-        {
-            var c = expression[i];
-
-            if (char.IsWhiteSpace(c))
-                continue;
-
-            if (char.IsLetter(c))
-            {
-                func += c;
-                if (i + 1 == expression.Length || !char.IsLetter(expression[i + 1]))
-                {
-                    tokens.Add(func);
-                    func = "";
-                }
-            }
-            else if (char.IsDigit(c) || c == '.')
-            {
-                number += c;
-                if (i + 1 == expression.Length || (!char.IsDigit(expression[i + 1]) && expression[i + 1] != '.'))
-                {
-                    tokens.Add(number);
-                    number = "";
-                }
-            }
-            else
-            {
-                tokens.Add(c.ToString());
-            }
-        }
-
-        return tokens.ToArray();
     }
 }
