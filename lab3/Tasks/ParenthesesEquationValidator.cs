@@ -8,13 +8,17 @@ public static class ParenthesesEquationValidator
     {
         Console.WriteLine("Введите скобочное выражение");
         var input = Console.ReadLine()?.Trim().ToLower();
-        while (string.IsNullOrEmpty(input))
+        bool result;
+        try
         {
-            Console.WriteLine("Введите выражение");
-            input = Console.ReadLine()?.Trim().ToLower();
+            result = Validate(input);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return;
         }
 
-        var result = Validate(input);
         Console.WriteLine("Результат: " + result);
     }
 

@@ -40,7 +40,8 @@ public static class ChartBuilder
                     result.Mesuarements.Select(p => p.Y),
                     Name: result.SeriesTitile,
                     ShowLegend: true,
-                    LineWidth: 2.5);
+                    LineWidth: 2.5,
+                    ShowMarkers: true);
         }
 
         var chart = Plotly.NET.Chart.Combine(gCharts)

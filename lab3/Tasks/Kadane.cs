@@ -6,35 +6,53 @@ public static class Kadane
     {
         Console.WriteLine("Введите набор чисел через пробел");
         var input = Console.ReadLine()?.Trim().ToLower();
-        while (string.IsNullOrEmpty(input))
+        (double[] BestSegment, double BestSum) result;
+        try
         {
-            Console.WriteLine("Введите выражение");
-            input = Console.ReadLine()?.Trim().ToLower();
+            var parsed = input
+                .Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(double.Parse)
+                .ToList();
+            result = Calculate(parsed);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return;
         }
 
-        var tokens = input.Split(
-            [' ', '\t'],
-            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-        ).Select(double.Parse).ToList();
-
-        var result = Calculate(tokens);
-        Console.WriteLine("Результат: " + result);
+        Console.WriteLine($"Результат: {result.BestSum}; {string.Join(' ', result.BestSegment)}");
     }
 
-    private static double Calculate(IList<double> arr)
+    private static (double[], double) Calculate(IList<double> numbers)
     {
-        var maxSoFar = arr[0]; // Максимальная сумма на данный момент
-        var maxEndingHere = arr[0]; // Максимальная сумма, заканчивающаяся в текущей позиции
+        var bestSum = numbers[0];
+        var currentSum = numbers[0];
 
-        for (var i = 1; i < arr.Count; i++)
+        var bestStart = 0;
+        var bestEnd = 0;
+        var currentStart = 0;
+
+        for (var i = 1; i < numbers.Count; i++)
         {
-            // Решаем — добавлять ли текущий элемент к предыдущей сумме, или начинать новую
-            maxEndingHere = Math.Max(arr[i], maxEndingHere + arr[i]);
+            if (numbers[i] > currentSum + numbers[i])
+            {
+                currentSum = numbers[i];
+                currentStart = i;
+            }
+            else
+            {
+                currentSum += numbers[i];
+            }
 
-            // Обновляем глобальный максимум
-            maxSoFar = Math.Max(maxSoFar, maxEndingHere);
+            if (!(currentSum > bestSum)) continue;
+            bestSum = currentSum;
+            bestStart = currentStart;
+            bestEnd = i;
         }
 
-        return maxSoFar;
+        var bestSegment = numbers.Skip(bestStart).Take(bestEnd - bestStart + 1).ToArray();
+
+        return (bestSegment, bestSum);
     }
 }
