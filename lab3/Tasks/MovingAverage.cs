@@ -8,26 +8,23 @@ public static class MovingAverage
     {
         Console.WriteLine("Введите набор чисел через пробел");
         var input = Console.ReadLine()?.Trim().ToLower();
-        while (string.IsNullOrEmpty(input))
-        {
-            Console.WriteLine("Введите выражение");
-            input = Console.ReadLine()?.Trim().ToLower();
-        }
-
-        var tokens = input.Split(
-            [' ', '\t'],
-            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-        ).Select(double.Parse).ToList();
-
         Console.WriteLine("Введите ширину окна");
-        input = Console.ReadLine()?.Trim().ToLower();
-        while (string.IsNullOrEmpty(input))
+        var window = Console.ReadLine()?.Trim().ToLower();
+        List<double> result;
+        try
         {
-            Console.WriteLine("Введите число");
-            input = Console.ReadLine()?.Trim().ToLower();
+            var parsed = input
+                .Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(double.Parse)
+                .ToList();
+            result = Calculate(parsed, int.Parse(window));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return;
         }
 
-        var result = Calculate(tokens, int.Parse(input));
         Console.WriteLine("Результат: " + string.Join(", ", result));
     }
 
@@ -38,7 +35,7 @@ public static class MovingAverage
         if (data == null || data.Count < windowSize)
             throw new ArgumentException("Длина данных должна быть не меньше размера окна");
 
-        var window = new CustomListQueue<double>(true);
+        var window = new CustomQueue<double>(true);
         var result = new List<double>();
         double sum = 0;
 

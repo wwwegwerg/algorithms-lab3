@@ -4,7 +4,7 @@ namespace lab3.Tasks;
 
 public static class Helpers
 {
-    private const int N = 10;
+    private const int N = 17;
 
     public static readonly List<(string Preset, string[] Values)> Inputs = ReadCsvData("input.csv")
         .Where(x => x.Key <= N)
@@ -74,24 +74,71 @@ public static class Helpers
             {
                 case '1':
                 {
-                    var value = line.Split(',')[1];
-                    ds.Push(value);
-                    if (showOutput) Console.WriteLine($"added value: {value}");
+                    var result = line.Split(',')[1];
+                    ds.Push(result);
+                    if (showOutput) Console.WriteLine($"added value: {result}");
                     break;
                 }
                 case '2':
                 {
-                    if (showOutput) Console.WriteLine($"removed value: {ds.Pop()}");
+                    var result = ds.Pop();
+                    if (showOutput) Console.WriteLine($"removed value: {result}");
                     break;
                 }
                 case '3':
                 {
-                    if (showOutput) Console.WriteLine($"peeked value: {ds.Top()}");
+                    var result = ds.Top();
+                    if (showOutput) Console.WriteLine($"peeked value: {result}");
                     break;
                 }
                 case '4':
                 {
-                    if (showOutput) Console.WriteLine($"isEmpty: {ds.IsEmpty}");
+                    var result = ds.IsEmpty;
+                    if (showOutput) Console.WriteLine($"isEmpty: {result}");
+                    break;
+                }
+                case '5':
+                {
+                    ds.Print();
+                    break;
+                }
+            }
+        }
+
+        ds.ShowOutput = originalOutputState;
+    }
+
+    public static void ParseData(string[] data, QueueWrapper<string> ds, bool showOutput = false)
+    {
+        var originalOutputState = ds.ShowOutput;
+        ds.ShowOutput = false;
+        foreach (var line in data)
+        {
+            switch (line[0])
+            {
+                case '1':
+                {
+                    var result = line.Split(',')[1];
+                    ds.Enqueue(result);
+                    if (showOutput) Console.WriteLine($"added value: {result}");
+                    break;
+                }
+                case '2':
+                {
+                    var result = ds.Dequeue();
+                    if (showOutput) Console.WriteLine($"removed value: {result}");
+                    break;
+                }
+                case '3':
+                {
+                    var result = ds.Peek();
+                    if (showOutput) Console.WriteLine($"peeked value: {result}");
+                    break;
+                }
+                case '4':
+                {
+                    var result = ds.IsEmpty;
+                    if (showOutput) Console.WriteLine($"isEmpty: {result}");
                     break;
                 }
                 case '5':
@@ -115,65 +162,27 @@ public static class Helpers
             {
                 case '1':
                 {
-                    var value = line.Split(',')[1];
-                    ds.Enqueue(value);
-                    if (showOutput) Console.WriteLine($"added value: {value}");
+                    var result = line.Split(',')[1];
+                    ds.Enqueue(result);
+                    if (showOutput) Console.WriteLine($"added value: {result}");
                     break;
                 }
                 case '2':
                 {
-                    if (showOutput) Console.WriteLine($"removed value: {ds.Dequeue()}");
+                    var result = ds.Dequeue();
+                    if (showOutput) Console.WriteLine($"removed value: {result}");
                     break;
                 }
                 case '3':
                 {
-                    if (showOutput) Console.WriteLine($"peeked value: {ds.Peek()}");
+                    var result = ds.Peek();
+                    if (showOutput) Console.WriteLine($"peeked value: {result}");
                     break;
                 }
                 case '4':
                 {
-                    if (showOutput) Console.WriteLine($"isEmpty: {ds.IsEmpty}");
-                    break;
-                }
-                case '5':
-                {
-                    ds.Print();
-                    break;
-                }
-            }
-        }
-
-        ds.ShowOutput = originalOutputState;
-    }
-
-    public static void ParseData(string[] data, CustomListQueue<string> ds, bool showOutput = false)
-    {
-        var originalOutputState = ds.ShowOutput;
-        ds.ShowOutput = false;
-        foreach (var line in data)
-        {
-            switch (line[0])
-            {
-                case '1':
-                {
-                    var value = line.Split(',')[1];
-                    ds.Enqueue(value);
-                    if (showOutput) Console.WriteLine($"added value: {value}");
-                    break;
-                }
-                case '2':
-                {
-                    if (showOutput) Console.WriteLine($"removed value: {ds.Dequeue()}");
-                    break;
-                }
-                case '3':
-                {
-                    if (showOutput) Console.WriteLine($"peeked value: {ds.Peek()}");
-                    break;
-                }
-                case '4':
-                {
-                    if (showOutput) Console.WriteLine($"isEmpty: {ds.IsEmpty}");
+                    var result = ds.IsEmpty;
+                    if (showOutput) Console.WriteLine($"isEmpty: {result}");
                     break;
                 }
                 case '5':

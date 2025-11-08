@@ -2,7 +2,7 @@ namespace DataStructures;
 
 public class CustomQueue<T>
 {
-    private readonly Queue<T> _queue = new();
+    private readonly List<T> _list = [];
 
     public CustomQueue(bool showOutput)
     {
@@ -10,31 +10,32 @@ public class CustomQueue<T>
     }
 
     public bool ShowOutput { get; set; }
-    public int Count => _queue.Count;
+    public int Count => _list.Count;
 
     public void Enqueue(T item)
     {
-        _queue.Enqueue(item);
+        _list.Add(item);
         if (ShowOutput) Print();
     }
 
     public T Dequeue()
     {
-        if (_queue.Count == 0)
+        if (_list.Count == 0) 
             throw new InvalidOperationException("The Queue is empty.");
-        var result = _queue.Dequeue();
+        var result = _list[0];
+        _list.RemoveAt(0);
         if (ShowOutput) Print();
         return result;
     }
 
     public T Peek()
     {
-        if (_queue.Count == 0)
+        if (_list.Count == 0)
             throw new InvalidOperationException("The Queue is empty.");
-        return _queue.Peek();
+        return _list[0];
     }
 
-    public bool IsEmpty => _queue.Count == 0;
+    public bool IsEmpty => _list.Count == 0;
 
     public void Print()
     {
@@ -43,6 +44,6 @@ public class CustomQueue<T>
 
     public override string ToString()
     {
-        return "{ " + string.Join(", ", _queue) + " }";
+        return "{ " + string.Join(", ", _list) + " }";
     }
 }

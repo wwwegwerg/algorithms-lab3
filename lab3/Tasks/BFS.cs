@@ -31,7 +31,7 @@ public static class BFS
             return "*";
 
         var sb = new StringBuilder();
-        var queue = new CustomListQueue<TreeNode<T>?>(true);
+        var queue = new CustomQueue<TreeNode<T>?>(true);
         queue.Enqueue(tree.Root);
 
         while (!queue.IsEmpty)

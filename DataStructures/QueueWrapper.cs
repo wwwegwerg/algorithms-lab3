@@ -1,41 +1,40 @@
 namespace DataStructures;
 
-public class CustomListQueue<T>
+public class QueueWrapper<T>
 {
-    private readonly List<T> _list = [];
+    private readonly Queue<T> _queue = new();
 
-    public CustomListQueue(bool showOutput)
+    public QueueWrapper(bool showOutput)
     {
         ShowOutput = showOutput;
     }
 
     public bool ShowOutput { get; set; }
-    public int Count => _list.Count;
+    public int Count => _queue.Count;
 
     public void Enqueue(T item)
     {
-        _list.Add(item);
+        _queue.Enqueue(item);
         if (ShowOutput) Print();
     }
 
     public T Dequeue()
     {
-        if (_list.Count == 0) 
+        if (_queue.Count == 0)
             throw new InvalidOperationException("The Queue is empty.");
-        var result = _list[0];
-        _list.RemoveAt(0);
+        var result = _queue.Dequeue();
         if (ShowOutput) Print();
         return result;
     }
 
     public T Peek()
     {
-        if (_list.Count == 0)
+        if (_queue.Count == 0)
             throw new InvalidOperationException("The Queue is empty.");
-        return _list[0];
+        return _queue.Peek();
     }
 
-    public bool IsEmpty => _list.Count == 0;
+    public bool IsEmpty => _queue.Count == 0;
 
     public void Print()
     {
@@ -44,6 +43,6 @@ public class CustomListQueue<T>
 
     public override string ToString()
     {
-        return "{ " + string.Join(", ", _list) + " }";
+        return "{ " + string.Join(", ", _queue) + " }";
     }
 }
