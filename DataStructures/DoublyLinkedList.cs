@@ -3,17 +3,14 @@ using System.Text;
 
 namespace DataStructures;
 
-public class DoublyLinkedList<T> : IEnumerable<T>
-{
+public class DoublyLinkedList<T> : IEnumerable<T> {
     public ListNode<T>? First { get; private set; }
     public ListNode<T>? Last { get; private set; }
     public int Count { get; private set; }
 
-    public void AddFirst(T value)
-    {
+    public void AddFirst(T value) {
         var newNode = new ListNode<T>(value);
-        if (First == null)
-        {
+        if (First == null) {
             First = newNode;
             Last = newNode;
             Count++;
@@ -26,11 +23,9 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         Count++;
     }
 
-    public void AddLast(T value)
-    {
+    public void AddLast(T value) {
         var newNode = new ListNode<T>(value);
-        if (First == null)
-        {
+        if (First == null) {
             First = newNode;
             Last = newNode;
             Count++;
@@ -43,16 +38,13 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         Count++;
     }
 
-    public T RemoveFirst()
-    {
-        if (First == null)
-        {
+    public T RemoveFirst() {
+        if (First == null) {
             throw new InvalidOperationException("The List is empty");
         }
 
         T result;
-        if (Count == 1)
-        {
+        if (Count == 1) {
             var node = First;
             result = node.Value;
             node.Invalidate();
@@ -71,16 +63,13 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         return result;
     }
 
-    public T RemoveLast()
-    {
-        if (First == null)
-        {
+    public T RemoveLast() {
+        if (First == null) {
             throw new InvalidOperationException("The List is empty");
         }
 
         T result;
-        if (Count == 1)
-        {
+        if (Count == 1) {
             var node = Last;
             result = node!.Value;
             node.Invalidate();
@@ -99,12 +88,10 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         return result;
     }
 
-    public override string ToString()
-    {
+    public override string ToString() {
         var sb = new StringBuilder();
         var current = First;
-        while (current != null)
-        {
+        while (current != null) {
             sb.Append(current);
             sb.Append(" -> ");
             current = current.Next;
@@ -114,11 +101,9 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         return sb.ToString();
     }
 
-    public IEnumerator<T> GetEnumerator()
-    {
+    public IEnumerator<T> GetEnumerator() {
         var current = First;
-        while (current != null)
-        {
+        while (current != null) {
             yield return current.Value;
             current = current.Next;
         }
@@ -126,66 +111,71 @@ public class DoublyLinkedList<T> : IEnumerable<T>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    private ListNode<T>? FindFirstNode(T value)
-    {
+    private ListNode<T>? FindFirstNode(T value) {
         var cur = First;
-        while (cur != null)
-        {
-            if (EqualityComparer<T>.Default.Equals(cur.Value, value))
+        while (cur != null) {
+            if (EqualityComparer<T>.Default.Equals(cur.Value, value)) {
                 return cur;
+            }
+
             cur = cur.Next;
         }
 
         return null;
     }
 
-    private void RemoveNode(ListNode<T> node)
-    {
+    private void RemoveNode(ListNode<T> node) {
         var prev = node.Previous;
         var next = node.Next;
 
-        if (prev != null) prev.Next = next;
-        else First = next;
-        if (next != null) next.Previous = prev;
-        else Last = prev;
+        if (prev != null) {
+            prev.Next = next;
+        } else {
+            First = next;
+        }
+
+        if (next != null) {
+            next.Previous = prev;
+        } else {
+            Last = prev;
+        }
 
         node.Invalidate();
         Count--;
     }
 
-    private void InsertBefore(ListNode<T> where, ListNode<T> newNode)
-    {
+    private void InsertBefore(ListNode<T> where, ListNode<T> newNode) {
         var prev = where.Previous;
         newNode.Next = where;
         newNode.Previous = prev;
         where.Previous = newNode;
-        if (prev != null) prev.Next = newNode;
-        else First = newNode;
+        if (prev != null) {
+            prev.Next = newNode;
+        } else {
+            First = newNode;
+        }
+
         Count++;
     }
 
-    private ListNode<T>? GetNodeAt(int index)
-    {
-        if (index < 0 || index >= Count) return null;
+    private ListNode<T>? GetNodeAt(int index) {
+        if (index < 0 || index >= Count) {
+            return null;
+        }
 
-        if (index <= Count / 2)
-        {
+        if (index <= Count / 2) {
             var i = 0;
             var cur = First;
-            while (i < index)
-            {
+            while (i < index) {
                 cur = cur!.Next;
                 i++;
             }
 
             return cur;
-        }
-        else
-        {
+        } else {
             var i = Count - 1;
             var cur = Last;
-            while (i > index)
-            {
+            while (i > index) {
                 cur = cur!.Previous;
                 i--;
             }
@@ -194,13 +184,13 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         }
     }
 
-    public void Task01()
-    {
-        if (Count <= 1) return;
+    public void Task01() {
+        if (Count <= 1) {
+            return;
+        }
 
         var current = First;
-        while (current != null)
-        {
+        while (current != null) {
             var next = current.Next;
             current.Next = current.Previous;
             current.Previous = next;
@@ -211,9 +201,10 @@ public class DoublyLinkedList<T> : IEnumerable<T>
     }
 
     // MoveLastToFront
-    public void Task02a()
-    {
-        if (Count <= 1) return;
+    public void Task02a() {
+        if (Count <= 1) {
+            return;
+        }
 
         var oldLast = Last!;
         var newLast = oldLast.Previous!;
@@ -227,9 +218,10 @@ public class DoublyLinkedList<T> : IEnumerable<T>
     }
 
     // MoveFirstToBack
-    public void Task02b()
-    {
-        if (Count <= 1) return;
+    public void Task02b() {
+        if (Count <= 1) {
+            return;
+        }
 
         var oldFirst = First!;
         var newFirst = oldFirst.Next!;
@@ -242,75 +234,61 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         Last = oldFirst;
     }
 
-    public int Task03()
-    {
+    public int Task03() {
         var distinct = 0;
-        for (var i = First; i != null; i = i.Next)
-        {
+        for (var i = First; i != null; i = i.Next) {
             var seenBefore = false;
-            for (var j = First; j != i; j = j!.Next)
-            {
-                if (!EqualityComparer<T>.Default.Equals(j!.Value, i.Value)) continue;
+            for (var j = First; j != i; j = j!.Next) {
+                if (!EqualityComparer<T>.Default.Equals(j!.Value, i.Value)) {
+                    continue;
+                }
+
                 seenBefore = true;
                 break;
             }
 
-            if (!seenBefore) distinct++;
+            if (!seenBefore) {
+                distinct++;
+            }
         }
 
         return distinct;
     }
 
-    public void Task04()
-    {
-        var cur = First;
-        while (cur != null)
-        {
-            var value = cur.Value;
-            var occ = 0;
-            for (var r = First; r != null; r = r.Next)
-            {
-                if (EqualityComparer<T>.Default.Equals(r.Value, value)) occ++;
+    public void Task04() {
+        for (var cur = First; cur != null; cur = cur.Next) {
+            var runner = cur;
+            while (runner.Next != null) {
+                if (EqualityComparer<T>.Default.Equals(runner.Next.Value, cur.Value)) {
+                    RemoveNode(runner.Next);
+                } else {
+                    runner = runner.Next;
+                }
             }
-
-            if (occ == 1)
-            {
-                cur = cur.Next;
-                continue;
-            }
-
-            var x = First;
-            while (x != null)
-            {
-                var next = x.Next;
-                if (EqualityComparer<T>.Default.Equals(x.Value, value))
-                    RemoveNode(x);
-                x = next;
-            }
-
-            cur = First;
         }
     }
 
-    public bool Task05(T x)
-    {
+    public bool Task05(T x) {
         var target = FindFirstNode(x);
-        if (target == null) return false;
+        if (target == null) {
+            return false;
+        }
 
         var originalLast = Last!;
         var cursor = First;
         var values = new List<T>();
 
-        while (true)
-        {
+        while (true) {
             values.Add(cursor!.Value);
-            if (cursor == originalLast) break;
+            if (cursor == originalLast) {
+                break;
+            }
+
             cursor = cursor.Next;
         }
 
         var insertAfter = target;
-        foreach (var val in values)
-        {
+        foreach (var val in values) {
             var clone = new ListNode<T>(val);
 
             var after = insertAfter.Next;
@@ -318,8 +296,11 @@ public class DoublyLinkedList<T> : IEnumerable<T>
             clone.Previous = insertAfter;
             clone.Next = after;
 
-            if (after != null) after.Previous = clone;
-            else Last = clone;
+            if (after != null) {
+                after.Previous = clone;
+            } else {
+                Last = clone;
+            }
 
             insertAfter = clone;
             Count++;
@@ -328,17 +309,14 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         return true;
     }
 
-    public void Task06(T value)
-    {
+    public void Task06(T value) {
         var cmp = Comparer<T>.Default;
-        if (First == null)
-        {
+        if (First == null) {
             AddFirst(value);
             return;
         }
 
-        if (cmp.Compare(value, First!.Value) <= 0)
-        {
+        if (cmp.Compare(value, First!.Value) <= 0) {
             var node = new ListNode<T>(value);
             node.Next = First;
             First.Previous = node;
@@ -348,8 +326,7 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         }
 
         var cur = First;
-        while (cur!.Next != null && cmp.Compare(cur.Next.Value, value) < 0)
-        {
+        while (cur!.Next != null && cmp.Compare(cur.Next.Value, value) < 0) {
             cur = cur.Next;
         }
 
@@ -358,20 +335,21 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         cur.Next = n;
         n.Previous = cur;
         n.Next = after;
-        if (after != null) after.Previous = n;
-        else Last = n;
+        if (after != null) {
+            after.Previous = n;
+        } else {
+            Last = n;
+        }
+
         Count++;
     }
 
-    public int Task07(T value)
-    {
+    public int Task07(T value) {
         var removed = 0;
         var cur = First;
-        while (cur != null)
-        {
+        while (cur != null) {
             var next = cur.Next;
-            if (EqualityComparer<T>.Default.Equals(cur.Value, value))
-            {
+            if (EqualityComparer<T>.Default.Equals(cur.Value, value)) {
                 RemoveNode(cur);
                 removed++;
             }
@@ -382,60 +360,56 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         return removed;
     }
 
-    public bool Task08(T target, T newValue)
-    {
+    public bool Task08(T target, T newValue) {
         var node = FindFirstNode(target);
-        if (node == null) return false;
+        if (node == null) {
+            return false;
+        }
 
         var n = new ListNode<T>(newValue);
         InsertBefore(node, n);
         return true;
     }
 
-    public void Task09(DoublyLinkedList<T> other)
-    {
-        if (other.Count == 0) return;
+    public void Task09(DoublyLinkedList<T> other) {
+        if (other.Count == 0) {
+            return;
+        }
 
         var cur = other.First;
-        while (cur != null)
-        {
+        while (cur != null) {
             AddLast(cur.Value);
             cur = cur.Next;
         }
     }
 
-    public DoublyLinkedList<T> Task10(T x)
-    {
+    public DoublyLinkedList<T> Task10(T x) {
         var eq = EqualityComparer<T>.Default;
 
         var cur = First;
         var index = 0;
-        while (cur != null && !eq.Equals(cur.Value, x))
-        {
+        while (cur != null && !eq.Equals(cur.Value, x)) {
             cur = cur.Next;
             index++;
         }
 
-        if (cur == null)
+        if (cur == null) {
             return new DoublyLinkedList<T>();
+        }
 
-        var second = new DoublyLinkedList<T>
-        {
+        var second = new DoublyLinkedList<T> {
             First = cur,
             Last = Last,
             Count = Count - index
         };
 
         var before = cur.Previous;
-        if (before != null)
-        {
+        if (before != null) {
             before.Next = null;
             cur.Previous = null;
             Last = before;
             Count = index;
-        }
-        else
-        {
+        } else {
             First = Last = null;
             Count = 0;
         }
@@ -443,16 +417,16 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         return second;
     }
 
-    public void Task11()
-    {
-        if (Count == 0) return;
+    public void Task11() {
+        if (Count == 0) {
+            return;
+        }
 
         var originalLast = Last!;
         var insertAfter = originalLast;
         var cur = First;
 
-        while (true)
-        {
+        while (true) {
             var clone = new ListNode<T>(cur!.Value);
 
             insertAfter.Next = clone;
@@ -460,39 +434,57 @@ public class DoublyLinkedList<T> : IEnumerable<T>
             insertAfter = clone;
             Count++;
 
-            if (cur == originalLast) break;
+            if (cur == originalLast) {
+                break;
+            }
+
             cur = cur.Next;
         }
 
         Last = insertAfter;
     }
 
-    public void Task12(int i, int j)
-    {
-        if (i == j) return;
-        if (i < 0 || j < 0 || i >= Count || j >= Count) throw new ArgumentOutOfRangeException();
+    public void Task12(int i, int j) {
+        if (i == j) {
+            return;
+        }
 
-        if (i > j) (i, j) = (j, i);
+        if (i < 0 || j < 0 || i >= Count || j >= Count) {
+            throw new ArgumentOutOfRangeException();
+        }
+
+        if (i > j) {
+            (i, j) = (j, i);
+        }
 
         var a = GetNodeAt(i);
         var b = GetNodeAt(j);
-        if (a == null || b == null) throw new InvalidOperationException();
+        if (a == null || b == null) {
+            throw new InvalidOperationException();
+        }
 
-        if (a.Next == b)
-        {
+        if (a.Next == b) {
             var pa = a.Previous;
             var nb = b.Next;
 
-            if (pa != null) pa.Next = b;
-            else First = b;
+            if (pa != null) {
+                pa.Next = b;
+            } else {
+                First = b;
+            }
+
             b.Previous = pa;
 
             b.Next = a;
             a.Previous = b;
 
             a.Next = nb;
-            if (nb != null) nb.Previous = a;
-            else Last = a;
+            if (nb != null) {
+                nb.Previous = a;
+            } else {
+                Last = a;
+            }
+
             return;
         }
 
@@ -501,14 +493,27 @@ public class DoublyLinkedList<T> : IEnumerable<T>
         var pb2 = b.Previous;
         var nb2 = b.Next;
 
-        if (pa2 != null) pa2.Next = b;
-        else First = b;
-        if (na2 != null) na2.Previous = b;
+        if (pa2 != null) {
+            pa2.Next = b;
+        } else {
+            First = b;
+        }
 
-        if (pb2 != null) pb2.Next = a;
-        else First = a;
-        if (nb2 != null) nb2.Previous = a;
-        else Last = a;
+        if (na2 != null) {
+            na2.Previous = b;
+        }
+
+        if (pb2 != null) {
+            pb2.Next = a;
+        } else {
+            First = a;
+        }
+
+        if (nb2 != null) {
+            nb2.Previous = a;
+        } else {
+            Last = a;
+        }
 
         a.Previous = pb2;
         a.Next = nb2;
@@ -517,26 +522,25 @@ public class DoublyLinkedList<T> : IEnumerable<T>
     }
 }
 
-public class ListNode<T>
-{
+public class ListNode<T> {
     public T Value { get; set; }
     public ListNode<T>? Next { get; internal set; }
     public ListNode<T>? Previous { get; internal set; }
 
-    public ListNode(T value)
-    {
+    public ListNode(T value) {
         Value = value;
     }
 
-    internal void Invalidate()
-    {
+    internal void Invalidate() {
         Next = null;
         Previous = null;
     }
 
-    public override string? ToString()
-    {
-        if (Value == null) return "";
+    public override string? ToString() {
+        if (Value == null) {
+            return "";
+        }
+
         return Value.ToString();
     }
 }

@@ -3,10 +3,8 @@ using DataStructures;
 
 namespace lab3.Tasks;
 
-public static class BFS
-{
-    public static void Run()
-    {
+public static class BFS {
+    public static void Run() {
         var root = new TreeNode<string>("A",
             new TreeNode<string>("B",
                 new TreeNode<string>("D",
@@ -25,20 +23,18 @@ public static class BFS
         Console.WriteLine("Результат: " + result);
     }
 
-    private static string TraverseTree<T>(BinaryTree<T> tree)
-    {
-        if (tree.Root == null)
+    private static string TraverseTree<T>(BinaryTree<T> tree) {
+        if (tree.Root == null) {
             return "*";
+        }
 
         var sb = new StringBuilder();
         var queue = new CustomQueue<TreeNode<T>?>(true);
         queue.Enqueue(tree.Root);
 
-        while (!queue.IsEmpty)
-        {
+        while (!queue.IsEmpty) {
             var current = queue.Dequeue();
-            if (current == null)
-            {
+            if (current == null) {
                 sb.Append('*');
                 continue;
             }

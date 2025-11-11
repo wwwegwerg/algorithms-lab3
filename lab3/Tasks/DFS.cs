@@ -3,10 +3,8 @@ using DataStructures;
 
 namespace lab3.Tasks;
 
-public static class DFS
-{
-    public static void Run()
-    {
+public static class DFS {
+    public static void Run() {
         var root = new TreeNode<string>("A",
             new TreeNode<string>("B",
                 new TreeNode<string>("D",
@@ -25,20 +23,18 @@ public static class DFS
         Console.WriteLine("Результат: " + result);
     }
 
-    private static string TraverseTree<T>(BinaryTree<T> tree)
-    {
-        if (tree.Root == null)
+    private static string TraverseTree<T>(BinaryTree<T> tree) {
+        if (tree.Root == null) {
             return "*";
+        }
 
         var sb = new StringBuilder();
         var stack = new CustomStack<TreeNode<T>?>(true);
         stack.Push(tree.Root);
 
-        while (!stack.IsEmpty)
-        {
+        while (!stack.IsEmpty) {
             var current = stack.Pop();
-            if (current == null)
-            {
+            if (current == null) {
                 sb.Append('*');
                 continue;
             }

@@ -2,19 +2,14 @@ using DataStructures;
 
 namespace lab3.Tasks;
 
-public static class ParenthesesEquationValidator
-{
-    public static void Run()
-    {
+public static class ParenthesesEquationValidator {
+    public static void Run() {
         Console.WriteLine("Введите скобочное выражение");
         var input = Console.ReadLine()?.Trim().ToLower();
         bool result;
-        try
-        {
+        try {
             result = Validate(input);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Console.WriteLine(e);
             return;
         }
@@ -29,23 +24,18 @@ public static class ParenthesesEquationValidator
         { '{', '}' }
     };
 
-    private static bool Validate(string expression)
-    {
+    private static bool Validate(string expression) {
         var stack = new CustomStack<char>(true);
-        foreach (var c in expression)
-        {
-            if (Pairs.ContainsKey(c))
-            {
+        foreach (var c in expression) {
+            if (Pairs.ContainsKey(c)) {
                 stack.Push(c);
-            }
-            else if (Pairs.ContainsValue(c))
-            {
-                if (stack.IsEmpty || Pairs[stack.Pop()] != c)
-                {
+            } else if (Pairs.ContainsValue(c)) {
+                if (stack.IsEmpty || Pairs[stack.Pop()] != c) {
                     return false;
                 }
+            } else {
+                return false;
             }
-            else return false;
         }
 
         return stack.Count == 0;

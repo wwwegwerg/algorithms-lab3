@@ -4,22 +4,18 @@ using lab3.Charts;
 
 namespace lab3.Tasks;
 
-public static class Stack
-{
-    public static void Run()
-    {
+public static class Stack {
+    public static void Run() {
         var cd = BenchStack(5, 5);
         ChartBuilder.Build2DLineChart(cd);
     }
 
     private static ChartData BenchStack(
         int warmupCount,
-        int repetitionCount)
-    {
+        int repetitionCount) {
         var dataSize = Helpers.Inputs.Count / 3;
 
-        var results = new List<(string SeriesTitile, IList<DataPoint> Mesuarements)>
-        {
+        var results = new List<(string SeriesTitile, IList<DataPoint> Mesuarements)> {
             ("Push Heavy C# Default Stack", new List<DataPoint>(dataSize)),
             ("Pop Heavy C# Default Stack", new List<DataPoint>(dataSize)),
             ("Equally Heavy C# Default Stack", new List<DataPoint>(dataSize)),
@@ -34,10 +30,8 @@ public static class Stack
 
         var sw = Stopwatch.StartNew();
 
-        foreach (var input in Helpers.Inputs)
-        {
-            var idx = input.Preset switch
-            {
+        foreach (var input in Helpers.Inputs) {
+            var idx = input.Preset switch {
                 "add-heavy" => 0,
                 "remove-heavy" => 1,
                 "1:1" => 2,
@@ -63,23 +57,19 @@ public static class Stack
             "Время (мс)",
             sw.Elapsed.TotalSeconds);
     }
-    
-    private static StackWrapper<string> GetStackWrapper()
-    {
+
+    private static StackWrapper<string> GetStackWrapper() {
         var stack = new StackWrapper<string>(false);
-        for (var i = 0; i < Helpers.StructSize; i++)
-        {
+        for (var i = 0; i < Helpers.StructSize; i++) {
             stack.Push(Helpers.Filler[i]);
         }
 
         return stack;
     }
 
-    private static CustomStack<string> GetCustomStack()
-    {
+    private static CustomStack<string> GetCustomStack() {
         var stack = new CustomStack<string>(false);
-        for (var i = 0; i < Helpers.StructSize; i++)
-        {
+        for (var i = 0; i < Helpers.StructSize; i++) {
             stack.Push(Helpers.Filler[i]);
         }
 

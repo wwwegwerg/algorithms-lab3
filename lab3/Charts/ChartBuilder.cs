@@ -4,12 +4,10 @@ using Chart = Plotly.NET.CSharp.Chart;
 
 namespace lab3.Charts;
 
-public static class ChartBuilder
-{
+public static class ChartBuilder {
     private static readonly DateTime ProgramStartTime = DateTime.Now;
 
-    public static void Build2DLineChart(ChartData cd)
-    {
+    public static void Build2DLineChart(ChartData cd) {
         var dataSetSize = Math.Log2(cd.Results[0].Mesuarements[^1].X);
         Console.WriteLine($"{cd.Title} – {dataSetSize} – {cd.TotalExecTimeSeconds}s");
 
@@ -17,22 +15,25 @@ public static class ChartBuilder
         Directory.CreateDirectory(outputDir);
         var fileName = $"{Sanitize(cd.Title)} - {ProgramStartTime:s} - {cd.TotalExecTimeSeconds}s.html";
         var filePath = Path.Combine(outputDir, fileName);
-        if (File.Exists(filePath))
-        {
+        if (File.Exists(filePath)) {
             Console.WriteLine($"Файл {filePath} уже существует. Перезаписать? (y/n)");
-            while (true)
-            {
+            while (true) {
                 var choice = Console.ReadLine()?.Trim().ToLower();
-                if (choice == "y") break;
-                if (choice == "n") return;
+                if (choice == "y") {
+                    break;
+                }
+
+                if (choice == "n") {
+                    return;
+                }
+
                 Console.WriteLine("Пожалуйста, введите 'y' или 'n'.");
             }
         }
 
         var gCharts = new GenericChart[cd.Results.Count];
 
-        for (var i = 0; i < gCharts.Length; i++)
-        {
+        for (var i = 0; i < gCharts.Length; i++) {
             var result = cd.Results[i];
             gCharts[i] = Chart
                 .Line<double, double, string>(
@@ -61,14 +62,12 @@ public static class ChartBuilder
         Console.WriteLine($"Файл сохранён: {filePath}");
     }
 
-    private static string Sanitize(string name)
-    {
+    private static string Sanitize(string name) {
         var bad = Path.GetInvalidFileNameChars();
         return new string(name.Select(c => bad.Contains(c) ? '_' : c).ToArray());
     }
 
-    private static string EnsureResponsiveUtf8Head(string html)
-    {
+    private static string EnsureResponsiveUtf8Head(string html) {
         const string head = @"
 <meta charset=""utf-8""/>
 <meta http-equiv=""Content-Type"" content=""text/html; charset=utf-8""/>
@@ -116,11 +115,9 @@ public static class ChartBuilder
 
         // если есть <head> — вставим сразу после открывающего тега
         var idxHead = html.IndexOf("<head", StringComparison.OrdinalIgnoreCase);
-        if (idxHead >= 0)
-        {
+        if (idxHead >= 0) {
             var idxEnd = html.IndexOf('>', idxHead);
-            if (idxEnd > idxHead)
-            {
+            if (idxEnd > idxHead) {
                 return html.Insert(idxEnd + 1, head);
             }
         }

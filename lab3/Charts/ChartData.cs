@@ -1,7 +1,6 @@
 namespace lab3.Charts;
 
-public class ChartData
-{
+public class ChartData {
     public readonly string Title;
     public readonly IList<(string SeriesTitile, IList<DataPoint> Mesuarements)> Results;
     public readonly string XAxisTitle;
@@ -13,8 +12,7 @@ public class ChartData
         IList<(string, IList<DataPoint>)> results,
         string xAxisTitle,
         string yAxisTitle,
-        double? totalExecTimeSeconds = null)
-    {
+        double? totalExecTimeSeconds = null) {
         Title = title;
         Results = results;
         XAxisTitle = xAxisTitle;

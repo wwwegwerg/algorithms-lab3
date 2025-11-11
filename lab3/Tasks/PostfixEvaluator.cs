@@ -3,19 +3,14 @@ using DataStructures;
 
 namespace lab3.Tasks;
 
-public static class PostfixEvaluator
-{
-    public static void Run()
-    {
+public static class PostfixEvaluator {
+    public static void Run() {
         Console.WriteLine("Введите выражение в постфиксной форме");
         var input = Console.ReadLine()?.Trim().ToLower();
         double result;
-        try
-        {
+        try {
             result = Evaluate(input);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Console.WriteLine(e);
             return;
         }
@@ -23,8 +18,7 @@ public static class PostfixEvaluator
         Console.WriteLine("Результат: " + result);
     }
 
-    private static readonly Dictionary<string, Func<double, double>> UnaryOperators = new()
-    {
+    private static readonly Dictionary<string, Func<double, double>> UnaryOperators = new() {
         ["ln"] = a => a <= 0
             ? throw new ArithmeticException("ln определён только для a > 0.")
             : Math.Log(a),
@@ -36,8 +30,7 @@ public static class PostfixEvaluator
             : Math.Sqrt(a),
     };
 
-    private static readonly Dictionary<string, Func<double, double, double>> BinaryOperators = new()
-    {
+    private static readonly Dictionary<string, Func<double, double, double>> BinaryOperators = new() {
         ["+"] = (a, b) => a + b,
         ["-"] = (a, b) => a - b,
         ["*"] = (a, b) => a * b,
@@ -47,23 +40,20 @@ public static class PostfixEvaluator
         ["^"] = Math.Pow,
     };
 
-    private static double Evaluate(string expression)
-    {
+    private static double Evaluate(string expression) {
         var stack = new CustomStack<double>(true);
         var tokens = Helpers.Tokenize(expression);
 
-        foreach (var token in tokens)
-        {
-            if (double.TryParse(token, NumberStyles.Any, CultureInfo.InvariantCulture, out var number))
-            {
+        foreach (var token in tokens) {
+            if (double.TryParse(token, NumberStyles.Any, CultureInfo.InvariantCulture, out var number)) {
                 stack.Push(number);
                 continue;
             }
 
-            if (UnaryOperators.TryGetValue(token, out var unary))
-            {
-                if (stack.Count < 1)
+            if (UnaryOperators.TryGetValue(token, out var unary)) {
+                if (stack.Count < 1) {
                     throw new InvalidOperationException($"Недостаточно операндов для унарной операции '{token}'.");
+                }
 
                 var a = stack.Pop();
                 var res = unary(a);
@@ -71,10 +61,10 @@ public static class PostfixEvaluator
                 continue;
             }
 
-            if (BinaryOperators.TryGetValue(token, out var binary))
-            {
-                if (stack.Count < 2)
+            if (BinaryOperators.TryGetValue(token, out var binary)) {
+                if (stack.Count < 2) {
                     throw new InvalidOperationException($"Недостаточно операндов для бинарной операции '{token}'.");
+                }
 
                 var b = stack.Pop();
                 var a = stack.Pop();
@@ -86,8 +76,10 @@ public static class PostfixEvaluator
             throw new ArgumentException($"Неизвестный оператор: {token}");
         }
 
-        if (stack.Count != 1)
+        if (stack.Count != 1) {
             throw new InvalidOperationException("Ошибка в выражении.");
+        }
+
         return stack.Pop();
     }
 }

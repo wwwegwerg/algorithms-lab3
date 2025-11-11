@@ -1,9 +1,7 @@
-﻿namespace lab3;
+namespace lab3;
 
-public class Program
-{
-    public static void Main()
-    {
+public class Program {
+    public static void Main() {
         const string titleStack = "Часть 1. Стек";
         const string titleQueue = "Часть 2. Очередь";
         const string titleDynamicStructs = "Часть 3. Динамические структуры";
@@ -21,21 +19,17 @@ public class Program
         main.Run();
     }
 
-    private static Menu GetStackMenu(string title)
-    {
+    private static Menu GetStackMenu(string title) {
         var stackMenu = new Menu(title);
-        stackMenu.Add(1, "Графики", () =>
-        {
+        stackMenu.Add(1, "Графики", () => {
             Tasks.Stack.Run();
             Menu.Pause();
         });
-        stackMenu.Add(2, "Вычисление постфиксного выражения", () =>
-        {
+        stackMenu.Add(2, "Вычисление постфиксного выражения", () => {
             Tasks.PostfixEvaluator.Run();
             Menu.Pause();
         });
-        stackMenu.Add(3, "Перевод инфиксного выражения в постфиксное", () =>
-        {
+        stackMenu.Add(3, "Перевод инфиксного выражения в постфиксное", () => {
             Tasks.InfixToPostfixConverter.Run();
             Menu.Pause();
         });
@@ -43,11 +37,9 @@ public class Program
         return stackMenu;
     }
 
-    private static Menu GetQueueMenu(string title)
-    {
+    private static Menu GetQueueMenu(string title) {
         var queueMenu = new Menu(title);
-        queueMenu.Add(1, "Графики", () =>
-        {
+        queueMenu.Add(1, "Графики", () => {
             Tasks.Queue.Run();
             Menu.Pause();
         });
@@ -55,26 +47,21 @@ public class Program
         return queueMenu;
     }
 
-    private static Menu GetDynamicStructsMenu(string title)
-    {
+    private static Menu GetDynamicStructsMenu(string title) {
         var dynamicStructsMenu = new Menu(title);
-        dynamicStructsMenu.Add(1, "Список: алгоритм Кадане", () =>
-        {
+        dynamicStructsMenu.Add(1, "Список: алгоритм Кадане", () => {
             Tasks.Kadane.Run();
             Menu.Pause();
         });
-        dynamicStructsMenu.Add(2, "Стек: валидация скобочных выражений", () =>
-        {
+        dynamicStructsMenu.Add(2, "Стек: валидация скобочных выражений", () => {
             Tasks.ParenthesesEquationValidator.Run();
             Menu.Pause();
         });
-        dynamicStructsMenu.Add(3, "Очередь: алгоритм скользящего среднего", () =>
-        {
+        dynamicStructsMenu.Add(3, "Очередь: алгоритм скользящего среднего", () => {
             Tasks.MovingAverage.Run();
             Menu.Pause();
         });
-        dynamicStructsMenu.Add(4, "Дерево: алгоритм поиска пути между двумя узлами", () =>
-        {
+        dynamicStructsMenu.Add(4, "Дерево: алгоритм поиска пути между двумя узлами", () => {
             Tasks.TreeAlgorithms.Run();
             Menu.Pause();
         });
@@ -82,66 +69,53 @@ public class Program
         return dynamicStructsMenu;
     }
 
-    private static Menu GetLinkedListMenu(string title)
-    {
+    private static Menu GetLinkedListMenu(string title) {
         var linkedListMenu = new Menu(title);
-        linkedListMenu.Add(1, "Задача 1", () =>
-        {
+        linkedListMenu.Add(1, "Задача 1", () => {
             Tasks.LinkedList.RunTask01();
             Menu.Pause();
         });
-        linkedListMenu.Add(2, "Задача 2", () =>
-        {
+        linkedListMenu.Add(2, "Задача 2", () => {
             Tasks.LinkedList.RunTask02();
             Menu.Pause();
         });
-        linkedListMenu.Add(3, "Задача 3", () =>
-        {
+        linkedListMenu.Add(3, "Задача 3", () => {
             Tasks.LinkedList.RunTask03();
             Menu.Pause();
         });
-        linkedListMenu.Add(4, "Задача 4", () =>
-        {
+        linkedListMenu.Add(4, "Задача 4", () => {
             Tasks.LinkedList.RunTask04();
             Menu.Pause();
         });
-        linkedListMenu.Add(5, "Задача 5", () =>
-        {
+        linkedListMenu.Add(5, "Задача 5", () => {
             Tasks.LinkedList.RunTask05();
             Menu.Pause();
         });
-        linkedListMenu.Add(6, "Задача 6", () =>
-        {
+        linkedListMenu.Add(6, "Задача 6", () => {
             Tasks.LinkedList.RunTask06();
             Menu.Pause();
         });
-        linkedListMenu.Add(7, "Задача 7", () =>
-        {
+        linkedListMenu.Add(7, "Задача 7", () => {
             Tasks.LinkedList.RunTask07();
             Menu.Pause();
         });
-        linkedListMenu.Add(8, "Задача 8", () =>
-        {
+        linkedListMenu.Add(8, "Задача 8", () => {
             Tasks.LinkedList.RunTask08();
             Menu.Pause();
         });
-        linkedListMenu.Add(9, "Задача 9", () =>
-        {
+        linkedListMenu.Add(9, "Задача 9", () => {
             Tasks.LinkedList.RunTask09();
             Menu.Pause();
         });
-        linkedListMenu.Add(10, "Задача 10", () =>
-        {
+        linkedListMenu.Add(10, "Задача 10", () => {
             Tasks.LinkedList.RunTask10();
             Menu.Pause();
         });
-        linkedListMenu.Add(11, "Задача 11", () =>
-        {
+        linkedListMenu.Add(11, "Задача 11", () => {
             Tasks.LinkedList.RunTask11();
             Menu.Pause();
         });
-        linkedListMenu.Add(12, "Задача 12", () =>
-        {
+        linkedListMenu.Add(12, "Задача 12", () => {
             Tasks.LinkedList.RunTask12();
             Menu.Pause();
         });
@@ -149,16 +123,13 @@ public class Program
         return linkedListMenu;
     }
 
-    private static Menu GetBinaryTreeMenu(string title)
-    {
+    private static Menu GetBinaryTreeMenu(string title) {
         var linkedListMenu = new Menu(title);
-        linkedListMenu.Add(1, "Обход в ширину", () =>
-        {
+        linkedListMenu.Add(1, "Обход в ширину", () => {
             Tasks.BFS.Run();
             Menu.Pause();
         });
-        linkedListMenu.Add(2, "Обход в глубину (прямой / preorder)", () =>
-        {
+        linkedListMenu.Add(2, "Обход в глубину (прямой / preorder)", () => {
             Tasks.DFS.Run();
             Menu.Pause();
         });

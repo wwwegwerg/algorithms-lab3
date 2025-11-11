@@ -4,22 +4,18 @@ using lab3.Charts;
 
 namespace lab3.Tasks;
 
-public static class Queue
-{
-    public static void Run()
-    {
+public static class Queue {
+    public static void Run() {
         var cd = BenchQueue(5, 5);
         ChartBuilder.Build2DLineChart(cd);
     }
 
     private static ChartData BenchQueue(
         int warmupCount,
-        int repetitionCount)
-    {
+        int repetitionCount) {
         var dataSize = Helpers.Inputs.Count / 3;
 
-        var results = new List<(string SeriesTitile, IList<DataPoint> Mesuarements)>
-        {
+        var results = new List<(string SeriesTitile, IList<DataPoint> Mesuarements)> {
             ("Enqueue Heavy C# Default Queue", new List<DataPoint>(dataSize)),
             ("Dequeue Heavy C# Default Queue", new List<DataPoint>(dataSize)),
             ("Equally Heavy C# Default Queue", new List<DataPoint>(dataSize)),
@@ -34,10 +30,8 @@ public static class Queue
 
         var sw = Stopwatch.StartNew();
 
-        foreach (var input in Helpers.Inputs)
-        {
-            var idx = input.Preset switch
-            {
+        foreach (var input in Helpers.Inputs) {
+            var idx = input.Preset switch {
                 "add-heavy" => 0,
                 "remove-heavy" => 1,
                 "1:1" => 2,
@@ -64,22 +58,18 @@ public static class Queue
             sw.Elapsed.TotalSeconds);
     }
 
-    private static QueueWrapper<string> GetQueueWrapper()
-    {
+    private static QueueWrapper<string> GetQueueWrapper() {
         var queue = new QueueWrapper<string>(false);
-        for (var i = 0; i < Helpers.StructSize; i++)
-        {
+        for (var i = 0; i < Helpers.StructSize; i++) {
             queue.Enqueue(Helpers.Filler[i]);
         }
 
         return queue;
     }
 
-    private static CustomQueue<string> GetCustomQueue()
-    {
+    private static CustomQueue<string> GetCustomQueue() {
         var queue = new CustomQueue<string>(false);
-        for (var i = 0; i < Helpers.StructSize; i++)
-        {
+        for (var i = 0; i < Helpers.StructSize; i++) {
             queue.Enqueue(Helpers.Filler[i]);
         }
 
